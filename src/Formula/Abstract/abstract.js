@@ -14,3 +14,5 @@ class AbstractFormula {
 
     }
 }
+
+module.exports = AbstractFormula;
