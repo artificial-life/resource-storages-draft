@@ -1,0 +1,26 @@
+{
+  "name": "resource-storages-draft",
+  "version": "1.0.0",
+  "description": "resources draft",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artificial-life/resource-storages-draft.git"
+  },
+  "keywords": [
+    "resources",
+    "draft"
+  ],
+  "author": "SS&Yuu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/artificial-life/resource-storages-draft/issues"
+  },
+  "homepage": "https://github.com/artificial-life/resource-storages-draft#readme",
+  "dependencies": {
+    "lodash": "^3.10.0"
+  }
+}
