@@ -5,6 +5,8 @@ var _ = require('lodash');
 
 class PlanStorage extends Abstract {
     constructor(Schedule, default_chunk_size) {
+        super();
+
         this.schedule = Schedule;
         this.chunk_size = default_chunk_size;
     }
@@ -17,10 +19,10 @@ class PlanStorage extends Abstract {
     }
     observe(params) {
         var example_params = {
-            chunk: 1000 * 60 * 5, //(msec) default : default_chunk_size
+            size: 1000 * 60 * 5, //(msec) default : default_chunk_size
             count: 10, // default : null
-            starts_from: 0, //default : now
-            ends_at: 46800000, // default : null
+            startTime: 0, //default : now
+            endTime: 46800000, // default : null
             criteria: {} //specific to resource type
         };
 
@@ -33,4 +35,4 @@ class PlanStorage extends Abstract {
     }
 }
 
-module.export = PlanStorage;
+module.exports = PlanStorage;

@@ -13,4 +13,4 @@ class AbstractStorage {
 }
 
 
-module.exists = AbstractStorage;
+module.exports = AbstractStorage;

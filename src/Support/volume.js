@@ -1,6 +1,6 @@
 'use strict'
 
-class Volume() {
+class Volume {
     constructor(definition) {
 
     }

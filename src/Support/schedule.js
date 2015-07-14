@@ -4,9 +4,9 @@ var _ = require('lodash');
 var Volume = require('./volume.js');
 var TimeChunk = require('./time-chunk.js');
 
-class Schedule extends Volume {
+class Schedule /*extends Volume*/ {
     constructor(chunk_array) {
-        super(chunk_array);
+        //super(chunk_array);
 
         this.chunks = [];
 
@@ -30,7 +30,7 @@ class Schedule extends Volume {
 
             left_slots -= result.length;
 
-            return result;
+            return result.slots;
         });
 
         var proccessed_results = this._processResults(results);

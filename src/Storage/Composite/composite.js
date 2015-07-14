@@ -4,6 +4,7 @@ var Abstract = require('../Abstract/abstract.js');
 
 class CompositeStorage extends Abstract {
     constructor(Formula) {
+        super();
         this.formula = Formula;
     }
     compose(params) {
@@ -14,4 +15,4 @@ class CompositeStorage extends Abstract {
     observe(params) {}
 }
 
-module.export = CompositeStorage;
+module.exports = CompositeStorage;

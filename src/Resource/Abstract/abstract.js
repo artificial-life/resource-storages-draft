@@ -17,4 +17,4 @@ class AbstractResource {
 }
 
 
-module.exists = AbstractResource;
+module.exports = AbstractResource;
