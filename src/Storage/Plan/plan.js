@@ -30,9 +30,6 @@ class PlanStorage extends Abstract {
 
         return result;
     }
-    now() {
-        return _.now();
-    }
 }
 
 module.exports = PlanStorage;

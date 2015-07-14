@@ -20,7 +20,7 @@ class Schedule /*extends Volume*/ {
         var left_slots = params.count || 9999;
 
         var results = _.map(this.chunks, (chunk) => {
-
+            //@TODO: use now() also
             var result = chunk.resetQuery()
                 .addParams(params)
                 .addParam('count', left_slots)
@@ -30,16 +30,23 @@ class Schedule /*extends Volume*/ {
 
             left_slots -= result.length;
 
-            return result.slots;
+            return result;
         });
 
         var proccessed_results = this._processResults(results);
 
         return proccessed_results;
     }
+    returnTime(chunk) {
+        //return unused time
+    }
     _processResults(results) {
         return results;
     }
+    now() {
+        return _.now();
+    }
+
 }
 
 module.exports = Schedule;
