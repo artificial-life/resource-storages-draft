@@ -21,6 +21,7 @@ class Schedule /*extends Volume*/ {
 
         var results = _.map(this.chunks, (chunk) => {
             //@TODO: use now() also
+
             var result = chunk.resetQuery()
                 .addParams(params)
                 .addParam('count', left_slots)
@@ -37,8 +38,38 @@ class Schedule /*extends Volume*/ {
 
         return proccessed_results;
     }
+    reserve(params) {
+        var sum_length = 0;
+        var left_slots = params.count || 9999;
+        var processed_chunks = [];
+
+        var results = _.map(this.chunks, (chunk) => {
+            //@TODO: use now() also
+
+            var result = chunk.resetQuery()
+                .addParams(params)
+                .addParam('count', left_slots)
+                .reserve();
+
+            if (!result.slots.length) {
+                processed_chunks.push(chunk);
+            } else {
+                processed_chunks = _.union(processed_chunks, result.parts);
+            }
+
+            left_slots -= result.slots.length;
+
+            return result.slots;
+        });
+
+        this.chunks = processed_chunks;
+
+        var proccessed_results = this._processResults(results);
+
+        return proccessed_results;
+    }
     returnTime(chunk) {
-        //return unused time
+        //return unused time mechanics here
     }
     _processResults(results) {
         return results;

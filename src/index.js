@@ -13,7 +13,7 @@ var TimeChunk = require('./Support/time-chunk.js');
 
 var tch = new TimeChunk([28800000, 46800000]);
 
-var result = tch.addParam('startTime', 28800000)
+var result = tch.addParam('startTime', 30800000)
     .addParam('endTime', 40000000)
     .addParam('size', 1000000)
     .addParam('count', 7).query();

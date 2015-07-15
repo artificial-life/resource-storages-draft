@@ -6,9 +6,10 @@ const default_size = 5 * 1000 * 60;
 const max_count = 9999;
 
 class TimeChunk {
-    constructor(chunk) {
-        [this.base_start, this.base_end] = chunk;
+    constructor(chunk, filled = false) {
         [this.start, this.end] = chunk;
+
+        this.is_filled = filled;
 
         this.resetQuery();
     }
@@ -39,7 +40,7 @@ class TimeChunk {
         return [cut_start, cut_end];
     }
     query() {
-        if (this.filters.count <= 0) return false;
+        if (this.filters.count <= 0 || this.isFilled()) return false;
 
 
         if (!this.filters.size) throw new Error('Wrong size filter' + this.filters.size);
@@ -64,32 +65,35 @@ class TimeChunk {
     reserve() {
         var slots = this.query();
         var [cut_start, ] = this.getCutPoints();
+        var parts = [];
 
         var split = false;
         var allocated = slots.length;
 
-        if (!allocated) return slots;
+        if (!allocated) return {
+            slots: []
+        };
 
-        split = cut_start !== this.start && ((cut_start + allocated * this.filters.size) !== this.end);
+        var cut_end = cut_start + allocated * this.filters.size;
 
-        if (split) {
-            //@TODO: do something T_T
+        if (cut_start !== this.start) {
+            parts.push(new TimeChunk([this.start, cut_start]));
         }
-        if (cut_start === this.start && ((cut_start + allocated * this.filters.size) !== this.end)) {
-            this.start = cut_start + allocated * this.filters.size;
+
+        parts.push(new TimeChunk([cut_start, cut_end], true));
+
+        if (this.end !== cut_end) {
+            parts.push(new TimeChunk([cut_end, this.end]));
         }
 
-        if ((cut_start + allocated * this.filters.size) === this.end) {
-            this.end = cut_start;
-        }
-        console.log(this.start, this.end);
-
-        return slots;
+        return {
+            slots: slots,
+            parts: parts
+        };
     }
-    returnPart(chunk) {
-
+    isFilled() {
+        return this.is_filled;
     }
-
 }
 
 
