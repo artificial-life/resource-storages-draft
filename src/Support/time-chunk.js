@@ -15,6 +15,8 @@ class TimeChunk {
     }
     addParams(params) {
         _.assign(this.filters, params);
+
+        if (!this.filters.size) throw new Error('Wrong size filter' + this.filters.size);
         return this;
     }
     addParam(key, value) {
@@ -34,16 +36,13 @@ class TimeChunk {
         return this;
     }
     getCutPoints() {
-        var cut_start = (this.filters.startTime < this.start) ? this.start : this.filters.startTime;
-        var cut_end = (this.filters.endTime > this.end) ? this.end : this.filters.endTime;
+        var cut_start = _.max([this.start, this.filters.startTime]);
+        var cut_end = _.min([this.end, this.filters.endTime]);
 
         return [cut_start, cut_end];
     }
     query() {
-        if (this.filters.count <= 0 || this.isFilled()) return false;
-
-
-        if (!this.filters.size) throw new Error('Wrong size filter' + this.filters.size);
+        if (this.filters.count <= 0 || this.isFilled()) return [];
 
         var allocated = 0;
         var slots = [];
@@ -52,23 +51,20 @@ class TimeChunk {
 
         var length = cut_end - cut_start;
 
-        allocated = Math.floor(length / this.filters.size);
+        allocated = _.min([Math.floor(length / this.filters.size), this.filters.count]);
 
-        allocated = allocated > this.filters.count ? this.filters.count : allocated;
-
-        for (var i = 1; i <= allocated; i += 1) {
-            slots.push([cut_start + (i - 1) * this.filters.size, cut_start + (i) * this.filters.size]);
+        for (var i = 0; i < allocated; i += 1) {
+            slots.push([cut_start + (i) * this.filters.size, cut_start + (i + 1) * this.filters.size]);
         }
 
         return slots;
     }
     reserve() {
         var slots = this.query();
-        var [cut_start, ] = this.getCutPoints();
+        var allocated = slots.length;
         var parts = [];
 
-        var split = false;
-        var allocated = slots.length;
+        var [cut_start, ] = this.getCutPoints();
 
         if (!allocated) return {
             slots: []

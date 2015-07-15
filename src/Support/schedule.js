@@ -10,12 +10,13 @@ class Schedule /*extends Volume*/ {
 
         this.chunks = [];
 
-        _(chunk_array).forEach((chunk) => {
-            this.chunks.push(new TimeChunk(chunk));
+        _(chunk_array).forEach((item) => {
+            this.chunks.push(new TimeChunk(item.chunk, item.is_filled));
         }).value();
-
     }
     observe(params) {
+        //@TODO:avoid code duplication
+
         var sum_length = 0;
         var left_slots = params.count || 9999;
 
@@ -39,6 +40,8 @@ class Schedule /*extends Volume*/ {
         return proccessed_results;
     }
     reserve(params) {
+        //@TODO:avoid code duplication
+
         var sum_length = 0;
         var left_slots = params.count || 9999;
         var processed_chunks = [];

@@ -24,7 +24,7 @@ console.log(result.length);
 result = tch.reserve();
 
 console.log(result);
-console.log(result.length);
+console.log(result.slots.length);
 
 result = tch.query();
 
@@ -32,10 +32,36 @@ console.log(result);
 console.log(result.length);
 
 var init = [
-    [28800000, 46800000],
-    [50400000, 64800000]
+    {
+        chunk: [28800000, 46800000],
+        is_filled: false
+    },
+    {
+        chunk: [50400000, 64800000],
+        is_filled: false
+    }
 ];
 
 var schedule = new Schedule(init);
 
 var pStorage = new PlanStorage(schedule);
+
+var r = schedule.observe({
+    startTime: 38800000,
+    endTime: 68800000,
+    size: 1000000,
+    count: 10
+});
+
+console.log(r);
+
+r = schedule.reserve({
+    startTime: 38800000,
+    endTime: 68800000,
+    size: 1000000,
+    count: 10
+});
+
+console.log(r);
+
+console.log(schedule.chunks);
