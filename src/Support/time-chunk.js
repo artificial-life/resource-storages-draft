@@ -13,16 +13,14 @@ class TimeChunk {
         this.resetQuery();
     }
     addParams(params) {
-        _.forEach(params, (value, key) => {
-            this.addParam(key, value)
-        });
+        _.assign(this.filters, params);
         return this;
     }
     addParam(key, value) {
-        if (this.filters.hasOwnProperty(key)) {
-            this.filters[key] = value;
-        }
-        return this;
+        var data = {};
+        data[key] = value;
+
+        return this.addParams(data);
     }
     resetQuery() {
         this.filters = {
