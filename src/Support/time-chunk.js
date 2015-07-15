@@ -74,7 +74,9 @@ class TimeChunk {
 
         split = cut_start !== this.start && ((cut_start + allocated * this.filters.size) !== this.end);
 
-        if (split) {}
+        if (split) {
+            //@TODO: do something T_T
+        }
         if (cut_start === this.start && ((cut_start + allocated * this.filters.size) !== this.end)) {
             this.start = cut_start + allocated * this.filters.size;
         }
