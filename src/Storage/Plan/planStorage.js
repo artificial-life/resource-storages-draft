@@ -4,11 +4,8 @@ var Abstract = require('../Abstract/abstract.js');
 var _ = require('lodash');
 
 class PlanStorage extends Abstract {
-    constructor(Schedule, default_chunk_size) {
+    constructor() {
         super();
-
-        this.schedule = Schedule;
-        this.chunk_size = default_chunk_size;
     }
     compose(params) {
         var Resource = 'Йа сделял!';
@@ -17,7 +14,7 @@ class PlanStorage extends Abstract {
 
         return Resource;
     }
-    observe(params) {
+    observe(object_type, object_id, params) {
         var example_params = {
             size: 1000 * 60 * 5, //(msec) default : default_chunk_size
             count: 10, // default : null
@@ -26,9 +23,15 @@ class PlanStorage extends Abstract {
             criteria: {} //specific to resource type
         };
 
-        var result = this.schedule.observe(example_params);
+        var plan = this.getPlan(object_type, object_id, time_range);
+
+        var result = Plan.observe(params);
 
         return result;
+    }
+    getPlan(object_type, object_id, time_range) {
+        var Plan = 'plan object';
+        return Plan;
     }
 }
 

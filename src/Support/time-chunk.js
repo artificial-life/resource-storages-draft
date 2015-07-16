@@ -90,6 +90,12 @@ class TimeChunk {
     isFilled() {
         return this.is_filled;
     }
+    toJSON() {
+        return {
+            chunk: [this.start, this.end],
+            is_filled: this.isFilled()
+        };
+    }
 }
 
 
