@@ -96,6 +96,18 @@ class TimeChunk {
             is_filled: this.isFilled()
         };
     }
+    intersection(chunk) {
+        var start = _.max([this.start, chunk.start]);
+        var end = _.min([this.end, chunk.end]);
+        if (start >= end) return false;
+
+        var is_filled = this.isFilled() || chunk.isFilled();
+
+        return new TimeChunk([start, end], is_filled);
+    }
+    union(chunk) {
+        return;
+    }
 }
 
 

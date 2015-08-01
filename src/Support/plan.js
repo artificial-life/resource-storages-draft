@@ -1,27 +1,36 @@
 'use strict'
 
+var Promise = require('bluebird');
 var _ = require('lodash');
 var Volume = require('./volume.js');
 var TimeChunk = require('./time-chunk.js');
 
 class Plan /*extends Volume*/ {
-    constructor(plan_id, schedule_id) {
-        //super(chunk_array);
+    constructor(plan_id, schedule_id = null) {
         this.chunks = [];
-
-        this.ready = this.getPlanFromDb(plan_id).then((plan) => {
-            if (plan) return plan.chunks;
-            return this.getScheduleFromDb(schedule_id);
-        }).then((chunk_array) => {
-            this.chunks = _.map(chunk_array, (item) => {
-                return new TimeChunk(item.chunk, item.is_filled)
-            });
-
-            return true;
-        });
-
+        this._load(plan_id, schedule_id);
     }
-    getPlanFromDb(plan_id) {
+    _load(plan_id, schedule_id) {
+        if (_.isArray(plan_id)) {
+            this._makeChunks(plan_id);
+            this.ready = Promise.resolve(true);
+            return true;
+        }
+
+        this.ready = this.getPlanFromDb(plan_id)
+            .then((plan) => (plan) ? plan : this.getScheduleFromDb(schedule_id))
+            .then((chunk_array) => this._makeChunks(chunk_array));
+
+        return true;
+    }
+    _makeChunks(chunk_array) {
+        this.chunks = _.map(chunk_array, (item) => {
+            return new TimeChunk(item.chunk, item.is_filled)
+        });
+        return true;
+    }
+    getPlanFromDb(data) {
+
         //db actions here
         console.log('try to load from db');
         return Promise.resolve(false);
@@ -99,6 +108,7 @@ class Plan /*extends Volume*/ {
     }
     returnTime(chunk) {
             //return unused time mechanics here
+
         }
         //@TODO: rename this! this is data to save in db
     getData() {
@@ -108,10 +118,61 @@ class Plan /*extends Volume*/ {
         return data;
     }
     _processResults(results) {
-        return results;
+        return _.flatten(results);
     }
     now() {
         return _.now();
+    }
+    intersection(plan) {
+        var other_chunks = plan.chunks;
+        var result = [];
+
+        _(this.chunks).forEach((chunk) => {
+            _(other_chunks).forEach((second_chunk) => {
+                var local_intersection = chunk.intersection(second_chunk);
+
+                if (local_intersection) result.push(local_intersection.toJSON());
+            }).value();
+        }).value();
+        return new Plan(result);
+    }
+    union(plan) {
+        if (this.chunks.length == 0) return plan.copy();
+        if (plan.length == 0) return this.copy();
+
+        var f_n = this.negative();
+        var s_n = plan.negative();
+
+        return f_n.intersection(s_n).negative();
+    }
+    negative() {
+        var start = -Infinity,
+            end;
+        var result = [];
+        _(this.chunks).forEach((chunk, index) => {
+            end = chunk.start;
+            if (start != end) {
+                result.push({
+                    chunk: [start, end],
+                    is_filled: false
+                });
+            }
+            start = chunk.end;
+
+        }).value();
+
+
+        if (start != Infinity) {
+            result.push({
+                chunk: [start, Infinity],
+                is_filled: false
+            });
+        }
+        return new Plan(result);
+    }
+    copy() {
+        var ch = _.map(this.chunks, (chunk) => chunk.toJSON());
+        return new Plan(ch);
     }
 
 }

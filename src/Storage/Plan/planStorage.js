@@ -30,6 +30,7 @@ class PlanStorage extends Abstract {
         return result;
     }
     getPlan(object_type, object_id, time_range) {
+        var plan_id = strategy();
         var Plan = 'plan object';
         return Plan;
     }
