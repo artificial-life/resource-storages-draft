@@ -56,6 +56,9 @@ class Plan /*extends Volume*/ {
         var sum_length = 0;
         var left_slots = params.count || 9999;
 
+        if (!params.size && params.startTime && params.endTime) {
+            params.size = params.endTime - params.startTime;
+        }
         var results = _.map(this.chunks, (chunk) => {
             //@TODO: use now() also
 
@@ -81,6 +84,10 @@ class Plan /*extends Volume*/ {
         var sum_length = 0;
         var left_slots = params.count || 9999;
         var processed_chunks = [];
+
+        if (!params.size && params.startTime && params.endTime) {
+            params.size = params.endTime - params.startTime;
+        }
 
         var results = _.map(this.chunks, (chunk) => {
             //@TODO: use now() also

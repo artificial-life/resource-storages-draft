@@ -6,7 +6,6 @@ var boot = require('./boot.js');
 
 boot();
 
-
 //Do test stuff
 
 var DBCollection = require('./Storage/DB/Collection/collection.js');
@@ -16,10 +15,9 @@ var Skills = new DBCollection('Skills');
 var Operators = new DBCollection('Operator');
 var Services = new DBCollection('Service');
 
+/*==========================================*/
 
-var OSSVolume = {};
 var OSSCompose = (operators, services, skills) => {
-
     return _.map(operators, (operator, i) => {
 
         return _.map(services, (service, j) => {
@@ -27,7 +25,6 @@ var OSSCompose = (operators, services, skills) => {
         });
 
     });
-
 };
 
 var TimeSlots = {
@@ -38,11 +35,26 @@ var TimeSlots = {
         waiting_allocation: [],
         current_state: null,
         find: function (params) {
-            var service = params.service;
-            var plan = this.current_state[service];
+            var service_id = params.service_id;
+            var operator_id = params.operator_id || '*';
 
-            if (!plan) return false;
-            return plan.observe(params);
+            var result = false;
+            console.log(operator_id);
+            if (operator_id === '*') {
+                result = [];
+                _(this.current_state).forEach((plan) => {
+
+                    var t = plan[service_id].observe(params);
+
+                    if (t.length > 0) {
+                        result.push(t);
+                    }
+                }).value();
+            } else {
+                var plan = this.current_state[operator_id][service_id];
+                result = plan.observe(params);
+            }
+            return result;
         }
     },
     reserve: function (params) {
@@ -53,8 +65,12 @@ var TimeSlots = {
         var slots = volume.find({
             service_id: params.service_id,
             startTime: params.startTime,
-            endTime: params.endTime
+            endTime: params.endTime,
+            operator_id: params.operator_id,
+            count: params.count
         });
+
+        console.log(slots);
 
         switch (slots.length) {
         case 0:
@@ -88,8 +104,6 @@ var TimeSlots = {
 
 };
 
-
-var FTS = {};
 
 var TimeSlotReduce = function (timeslots) {
     var reduced = [];
@@ -150,7 +164,8 @@ var FreeTimeSlotStorage = {
         var result = this.ingredients[0].reserve({
             service_id: service,
             startTime: startTime,
-            endTime: endTime
+            endTime: endTime,
+            count: 1
         });
 
         if (!result) throw new Error('can not allocate enought space');
