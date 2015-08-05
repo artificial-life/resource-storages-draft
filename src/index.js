@@ -82,6 +82,12 @@ var TimeSlots = {
         default:
             console.log('Multiple variants');
             console.log('Push to not allocated');
+            this.volume.waiting_allocation.push({
+                service_id: params.service_id,
+                startTime: params.startTime,
+                endTime: params.endTime,
+                operator_id: params.operator_id
+            });
         }
 
         return true;
@@ -159,6 +165,7 @@ var FreeTimeSlotStorage = {
         });
 
         if (!minute_slot) throw new Error('can not find free space');
+
         var [[startTime, endTime]] = minute_slot;
 
         var result = this.ingredients[0].reserve({
@@ -176,7 +183,9 @@ var FreeTimeSlotStorage = {
             slot_id: Math.random(),
             service_id: service,
             operator_id: result.operator_id
-        }
+        };
+
+        //FreeSlot.save();
 
         return FreeSlot;
     },
