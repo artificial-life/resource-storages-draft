@@ -6,11 +6,12 @@ var watch = require('gulp-watch');
 var server = require('gulp-develop-server');
 var livereload = require('gulp-livereload');
 var changed = require('gulp-changed');
+var nodemon = require('gulp-nodemon');
 
 require('harmonize')();
 
 var options = {
-    path: './build/index.js',
+    path: './build/draft.js',
     execArgv: ['--harmony']
 };
 
@@ -18,6 +19,21 @@ var options = {
 gulp.task('server:start', ['es6'], function () {
     server.listen(options, livereload.listen);
 });
+
+gulp.task("draft", function () {
+    return gulp.src("src/draft.js")
+        .pipe(babel({
+            blacklist: ['bluebirdCoroutines', 'regenerator']
+        }))
+        .pipe(gulp.dest("build")).on('end', function () {
+            require('./build/draft.js');
+            setTimeout(function () {
+                console.log('timeout');
+                process.exit()
+            }, 30000);
+        });
+});
+
 
 gulp.task("default", function () {
     return gulp.src("src/**/*.js")
@@ -53,7 +69,7 @@ gulp.task("sm", function () {
         .pipe(gulp.dest("build"));
 });
 
-gulp.task('serve', ['server:start'], function () {
+gulp.task('serve', ['start'], function () {
 
     gulp.watch('src/**/*.js', ['es6-ll']);
 });
@@ -66,6 +82,17 @@ gulp.task('es6-ll', function () {
         }))
         .pipe(gulp.dest("build"))
         .on('end', function () {
-            server.restart();
+            //server.restart();
+            console.log('build');
         });
 });
+
+gulp.task('start', function () {
+    nodemon({
+        script: 'build/draft.js',
+        ext: 'js',
+        env: {
+            'NODE_ENV': 'development'
+        }
+    })
+})

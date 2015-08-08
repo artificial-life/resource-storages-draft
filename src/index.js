@@ -81,7 +81,7 @@ var TimeSlots = {
             break;
         default:
             console.log('Multiple variants');
-            console.log('Push to not allocated');
+            console.log('Sending to operators');
             this.volume.waiting_allocation.push({
                 service_id: params.service_id,
                 startTime: params.startTime,
