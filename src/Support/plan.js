@@ -2,10 +2,9 @@
 
 var Promise = require('bluebird');
 var _ = require('lodash');
-var Volume = require('./volume.js');
 var TimeChunk = require('./time-chunk.js');
 
-class Plan /*extends Volume*/ {
+class Plan {
     constructor(plan_id, schedule_id = null) {
         this.chunks = [];
         this._load(plan_id, schedule_id);

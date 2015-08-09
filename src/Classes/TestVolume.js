@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Volume = require('./Volume.js');
+var VolumeParamHub = require('./VolumeParametersHub.js');
 
 class TestVolume extends Volume {
     constructor() {
@@ -9,11 +10,14 @@ class TestVolume extends Volume {
             id1: new VolumeIndex(1, 10),
             time: new PlanParameter()
         });
-
+        this.parameters = new VolumeParamHub();
     }
     build() {
         this.path = [];
-        this._build(0);
+        //this._build(0);
+        this.parameters.forEach((params, slice) => {
+            console.log('volume slices');
+        });
     }
     _build(i) {
         var param = this.params.discrete[i].param;

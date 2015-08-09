@@ -7,7 +7,6 @@ class Volume {
         this.params = {};
         this.params.discrete = [];
         this.params.continous = [];
-
         _.forEach(params, (param, key) => {
             if (param.isDiscrete()) {
                 this.params.discrete.push({
