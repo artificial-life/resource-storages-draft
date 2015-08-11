@@ -3,51 +3,56 @@
 var Promise = require('bluebird');
 var _ = require('lodash');
 var TimeChunk = require('./time-chunk.js');
+var BasicVolume = require('./Classes/BasicVolume.js');
 
-class Plan {
-    constructor(plan_id, schedule_id = null) {
-        this.chunks = [];
-        this._load(plan_id, schedule_id);
+class Plan extends BasicVolume {
+    constructor(parameters_description, parent) {
+        super(parameters_description, parent);
+        this.primitiveVolume = TimeChunk;
+        this.content = [];
     }
-    _load(plan_id, schedule_id) {
-        if (_.isArray(plan_id)) {
-            this._makeChunks(plan_id);
-            this.ready = Promise.resolve(true);
-            return true;
+    build(data) {
+        if (!_.isArray(data)) return this;
+
+        //build from array
+        //build from |V|=0
+        _.forEach(data, (raw_data) => {
+            var continuos_volume = buildPrimitiveVolume(raw_data);
+            this.extend(continuos_volume, false);
+        });
+
+
+        return this;
+    }
+    buildPrimitiveVolume(item) {
+        return new this.primitiveVolume(item.data, item.state);
+    }
+    extend(plan, sort = true) {
+        var ext = [];
+
+        if (plan instanceof Plan) {
+            ext = plan.content;
+        } else
+        if (plan instanceof this.primitiveVolume) {
+            ext = [plan];
         }
 
-        this.ready = this.getPlanFromDb(plan_id)
-            .then((plan) => (plan) ? plan : this.getScheduleFromDb(schedule_id))
-            .then((chunk_array) => this._makeChunks(chunk_array));
-
-        return true;
-    }
-    _makeChunks(chunk_array) {
-        this.chunks = _.map(chunk_array, (item) => {
-            return new TimeChunk(item.chunk, item.is_filled)
+        _.forEach(ext, (primitive) => {
+            extendPrimitive(primitive);
         });
-        return true;
-    }
-    getPlanFromDb(data) {
 
-        //db actions here
-        console.log('try to load from db');
-        return Promise.resolve(false);
+        if (sort) this.sort();
+
+        return this;
+
     }
-    getScheduleFromDb(schedule_id) {
-        //db actions here
-        //and make plan from schedule: transform relative time to absolute, is_filled: false, etc
-        console.log('try to make plans from schedule');
-        var now = 0;
-        return Promise.resolve([
-            {
-                chunk: [now + 28800000, now + 46800000],
-                is_filled: false
-            },
-            {
-                chunk: [now + 50400000, now + 64800000],
-                is_filled: false
-            }]);
+    extendPrimitive(primitive) {
+        return this.content.push(primitive);
+    }
+    sort() {
+        this.content = _.sortBy(this.content, function (chunk) {
+            return this.start;
+        });
     }
     observe(params) {
         //@TODO:avoid code duplication
@@ -112,11 +117,6 @@ class Plan {
 
         return proccessed_results;
     }
-    returnTime(chunk) {
-            //return unused time mechanics here
-
-        }
-        //@TODO: rename this! this is data to save in db
     getData() {
         var data = _.map(this.chunks, (chunk) => {
             return chunk.toJSON();
@@ -126,20 +126,18 @@ class Plan {
     _processResults(results) {
         return _.flatten(results);
     }
-    now() {
-        return _.now();
-    }
     intersection(plan) {
-        var other_chunks = plan.chunks;
+        var other_content = plan instanceof Plan ? plan.content : [plan];
         var result = [];
 
-        _(this.chunks).forEach((chunk) => {
-            _(other_chunks).forEach((second_chunk) => {
+        _(this.content).forEach((chunk) => {
+            _(other_content).forEach((second_chunk) => {
                 var local_intersection = chunk.intersection(second_chunk);
 
                 if (local_intersection) result.push(local_intersection.toJSON());
             }).value();
         }).value();
+
         return new Plan(result);
     }
     union(plan) {
