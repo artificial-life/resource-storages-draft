@@ -3,7 +3,7 @@
 var BasicVolume = require('./BasicVolume.js');
 var AbstractVolume = require('./AbstractVolume.js');
 var Layer = require('./Layer.js');
-
+var Query = require('./Query/query.js');
 
 class MultiLayerVolume extends AbstractVolume {
     constructor(parameters_description, LayerVolume, parent) {
@@ -11,6 +11,7 @@ class MultiLayerVolume extends AbstractVolume {
         this.params_set = false;
         this.LayerVolume = LayerVolume;
         this.layers = {};
+        this.query = new Query(this.getParams());
     }
     build() {
         throw new Error('abstract method. Must be specified directly in child');
@@ -53,14 +54,20 @@ class MultiLayerVolume extends AbstractVolume {
         return this;
     }
     observe(params) {
-        var result = new MultiLayerVolume(this.getParams().getDesription(), this);
+        this.query.addParams(params);
 
-        _.forEach(this.layers, (layer) => result.extend(layer.observe(params)));
+        var result = new MultiLayerVolume(this.getParams().getDescription(), this);
 
+        this.query.filter(this.layers, (layer, continuos_params) => {
+            //console.log(layer, continuos_params);
+            var observed = layer.observe(continuos_params);
+            result.extend(observed);
+        });
+        //_.forEach(this.layers, (layer) => result.extend(layer.observe(params)));
         return result;
     }
     reserve(params) {
-        var result = new MultiLayerVolume(this.getParams().getDesription(), this);
+        var result = new MultiLayerVolume(this.getParams().getDescription(), this);
 
         _.forEach(this.layers, (layer) => {
             var result_layer = layer.reserve(params);

@@ -3,11 +3,15 @@
 var DiscreteParameter = require('./DiscreteParameter.js');
 
 class IndexKey {
-    constructor(data) {
+    constructor(data, name) {
         this.data = data;
+        this.param_name = name;
     }
     toString() {
         return this.data;
+    }
+    getName() {
+        return this.param_name;
     }
 }
 
@@ -22,7 +26,7 @@ class IndexParameter extends DiscreteParameter {
         });
     }
     makeKey(data) {
-        return new IndexKey(data);
+        return new IndexKey(data, this.getName());
     }
 
 }

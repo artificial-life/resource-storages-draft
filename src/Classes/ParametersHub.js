@@ -18,6 +18,7 @@ class Parameters {
         this.params.discrete = [];
         this.params.continuos = [];
         this.by_name = {};
+        this.params_count = 0;
 
         _.forEach(description, (param_desc) => {
             var model = discover(param_desc.type);
@@ -34,7 +35,7 @@ class Parameters {
 
         this.by_name[param.getName()] = {
             list: list,
-            id: this.params[list].length
+            list_id: this.params[list].length
         };
 
         this.params[list].push(param)
@@ -50,7 +51,7 @@ class Parameters {
     getParamByName(name) {
         if (this.hasParam(name)) {
             var list = this.by_name[name].list;
-            var id = this.by_name[name].id;
+            var id = this.by_name[name].list_id;
             return this.params[list][id];
         }
         return false;
@@ -64,11 +65,21 @@ class Parameters {
     All() {
         return _.union(this.params.discrete, this.params.continuos);
     }
-    getDesription() {
-        return _.map(this.All(), (param) => param.getDesription());
+    getDescription() {
+        return _.map(this.All(), (param) => param.getDescription());
     }
     makeKey(data_array) {
         return _.map(this.Discrete(), (param, index) => param.makeKey(data_array[index]));
+    }
+    getNames(list) {
+        switch (list.toLowerCase()) {
+        case 'continuos':
+            return _.map(this.Continuos(), (param) => param.getName());
+        case 'discrete':
+            return _.map(this.Discrete(), (param) => param.getName());
+        default:
+            return _.map(this.All(), (param) => param.getName());
+        }
     }
 }
 

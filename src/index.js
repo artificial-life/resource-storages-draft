@@ -10,4 +10,12 @@ var serviceCollection = new PlanCollection('service_id');
 operatorCollection.build(5);
 serviceCollection.build(3);
 
-console.log(operatorCollection.getParams().by_name);
+operatorCollection.observe({
+    'operator_id': {
+        start: 1,
+        end: 10
+    },
+    'time': {
+        data: [0, 100]
+    }
+});
