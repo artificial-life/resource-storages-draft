@@ -13,7 +13,7 @@ class IndexKey {
 
 class IndexParameter extends DiscreteParameter {
     constructor(
-        name = 'deafult_index', default_values = {
+        name = 'defualt_index', default_values = {
             start: 0,
             end: Infinity
         }) {

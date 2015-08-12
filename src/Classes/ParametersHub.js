@@ -3,10 +3,12 @@
 var _ = require('lodash');
 
 var stored_types = {};
+
 var discover = function (name) {
     if (stored_types.hasOwnProperty(name)) return stored_types[name];
 
-    stored_types[name] = require('./Parameters/' + name + 'Parameter.js');
+    var param_name = _.capitalize(_.camelCase(name));
+    stored_types[name] = require('./Parameters/' + param_name + 'Parameter.js');
     return stored_types[name];
 }
 
@@ -15,32 +17,43 @@ class Parameters {
         this.params = {};
         this.params.discrete = [];
         this.params.continuos = [];
+        this.by_name = {};
 
-        _.foEach(description, (param_desc) => {
+        _.forEach(description, (param_desc) => {
             var model = discover(param_desc.type);
             var default_values = param_desc.default_values;
             var global_name = param_desc.name;
 
-            var param = new model({
-                name: global_name,
-                default_values: default_values
-            });
+            var param = new model(global_name, default_values);
 
-            if (param.isDiscrete()) {
-                this.params.discrete.push(param)
-            } else {
-                this.params.continuos.push(param);
-            }
+            this.addParam(param)
         });
+    }
+    addParam(param) {
+        var list = param.isDiscrete() ? 'discrete' : 'continuos';
+
+        this.by_name[param.getName()] = {
+            list: list,
+            id: this.params[list].length
+        };
+
+        this.params[list].push(param)
     }
     addParams(params) {
         _.forEach(params, (param) => {
-            if (param.isDiscrete()) {
-                this.params.discrete.push(param)
-            } else {
-                this.params.continuos.push(param);
-            }
+            this.addParam(param);
         });
+    }
+    hasParam(name) {
+        return this.by_name.hasOwnProperty(name);
+    }
+    getParamByName(name) {
+        if (this.hasParam(name)) {
+            var list = this.by_name[name].list;
+            var id = this.by_name[name].id;
+            return this.params[list][id];
+        }
+        return false;
     }
     Discrete() {
         return this.params.discrete;

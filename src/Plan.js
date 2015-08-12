@@ -6,39 +6,25 @@ var TimeChunk = require('./time-chunk.js');
 var BasicVolume = require('./Classes/BasicVolume.js');
 
 class Plan extends BasicVolume {
-    constructor(parameters_description, parent) {
-        super(parameters_description, parent);
-        this.primitiveVolume = TimeChunk;
-        this.content = [];
+    constructor(parent) {
+        super(TimeChunk, parent);
     }
     build(data) {
         if (!_.isArray(data)) return this;
-
         //build from array
-        //build from |V|=0
+        //build from |V|=0 
         _.forEach(data, (raw_data) => {
-            var continuos_volume = buildPrimitiveVolume(raw_data);
-            this.extend(continuos_volume, false);
+            var primitive_volume = this.buildPrimitiveVolume(raw_data);
+            this.extend(primitive_volume, false);
         });
-
 
         return this;
     }
-    buildPrimitiveVolume(item) {
-        return new this.primitiveVolume(item.data, item.state);
-    }
     extend(plan, sort = true) {
-        var ext = [];
-
-        if (plan instanceof Plan) {
-            ext = plan.content;
-        } else
-        if (plan instanceof this.primitiveVolume) {
-            ext = [plan];
-        }
+        var ext = this.extractContent(plan);
 
         _.forEach(ext, (primitive) => {
-            extendPrimitive(primitive);
+            this.extendPrimitive(primitive);
         });
 
         if (sort) this.sort();
@@ -46,8 +32,10 @@ class Plan extends BasicVolume {
         return this;
 
     }
-    extendPrimitive(primitive) {
-        return this.content.push(primitive);
+    extractContent(plan) {
+        if (!(plan instanceof Plan || plan instanceof this.primitiveVolume)) throw new Error('Can not extract');
+
+        return plan instanceof Plan ? plan.getContent() : [plan];
     }
     sort() {
         this.content = _.sortBy(this.content, function (chunk) {
@@ -63,9 +51,9 @@ class Plan extends BasicVolume {
         if (!params.size && params.startTime && params.endTime) {
             params.size = params.endTime - params.startTime;
         }
-        var results = _.map(this.chunks, (chunk) => {
-            //@TODO: use now() also
 
+        var results = _.map(this.content, (chunk) => {
+            //@TODO: use now() also
             var result = chunk.resetQuery()
                 .addParams(params)
                 .addParam('count', left_slots)
@@ -93,7 +81,7 @@ class Plan extends BasicVolume {
             params.size = params.endTime - params.startTime;
         }
 
-        var results = _.map(this.chunks, (chunk) => {
+        var results = _.map(this.content, (chunk) => {
             //@TODO: use now() also
 
             var result = chunk.resetQuery()
@@ -111,14 +99,14 @@ class Plan extends BasicVolume {
             return result.slots;
         });
 
-        this.chunks = processed_chunks;
+        this.content = processed_chunks;
 
         var proccessed_results = this._processResults(results);
 
         return proccessed_results;
     }
     getData() {
-        var data = _.map(this.chunks, (chunk) => {
+        var data = _.map(this.content, (chunk) => {
             return chunk.toJSON();
         });
         return data;
@@ -141,8 +129,8 @@ class Plan extends BasicVolume {
         return new Plan(result);
     }
     union(plan) {
-        if (this.chunks.length == 0) return plan.copy();
-        if (plan.length == 0) return this.copy();
+        if (this.content.length == 0) return plan.copy();
+        if (plan.content.length == 0) return this.copy();
 
         var f_n = this.negative();
         var s_n = plan.negative();
@@ -153,12 +141,13 @@ class Plan extends BasicVolume {
         var start = -Infinity,
             end;
         var result = [];
-        _(this.chunks).forEach((chunk, index) => {
+
+        _(this.content).forEach((chunk, index) => {
             end = chunk.start;
             if (start != end) {
                 result.push({
-                    chunk: [start, end],
-                    is_filled: false
+                    data: [start, end],
+                    state: 'a'
                 });
             }
             start = chunk.end;
@@ -168,17 +157,16 @@ class Plan extends BasicVolume {
 
         if (start != Infinity) {
             result.push({
-                chunk: [start, Infinity],
-                is_filled: false
+                data: [start, Infinity],
+                state: 'a'
             });
         }
         return new Plan(result);
     }
     copy() {
-        var ch = _.map(this.chunks, (chunk) => chunk.toJSON());
+        var ch = _.map(this.content, (chunk) => chunk.toJSON());
         return new Plan(ch);
     }
-
 }
 
 module.exports = Plan;

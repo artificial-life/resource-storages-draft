@@ -3,12 +3,10 @@
 var Params = require('./ParametersHub.js');
 
 class AbstractVolume {
-    constructor({
-        parameters_desc
-    }) {
-        this.parameters = Params(parameters_desc);
+    constructor(parameters_description, parent) {
+        this.parameters = new Params(parameters_description);
+        this.parent = parent || false;
     }
-
     getParams() {
         return this.parameters;
     }

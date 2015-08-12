@@ -1,17 +1,22 @@
 'use strict'
 
 var _ = require('lodash');
+var PrimitiveVolume = require('./Classes/PrimitiveVolume.js');
 
 const default_size = 5 * 1000 * 60;
 const max_count = 9999;
 
-class TimeChunk {
-    constructor(chunk, filled = false) {
-        [this.start, this.end] = chunk;
-
-        this.is_filled = filled;
-
+class TimeChunk extends PrimitiveVolume {
+    constructor(data, state = 'a') {
+        super(state);
+        [this.start, this.end] = data;
         this.resetQuery();
+    }
+    static getParamsDescription() {
+        return [{
+            type: 'volume_definition',
+            name: 'time'
+        }];
     }
     addParams(params) {
         _.assign(this.filters, params);
@@ -42,7 +47,7 @@ class TimeChunk {
         return [cut_start, cut_end];
     }
     query() {
-        if (this.filters.count <= 0 || this.isFilled()) return [];
+        if (this.filters.count <= 0 || this.isReserved()) return [];
 
         var allocated = 0;
         var slots = [];
@@ -87,26 +92,33 @@ class TimeChunk {
             parts: parts
         };
     }
-    isFilled() {
-        return this.is_filled;
+    isReserved() {
+        return this.state.isReserved();
+    }
+    isAvailable() {
+        return this.state.isAvailable();
+    }
+    isNotAvailable() {
+        return this.state.isNotAvailable();
+    }
+    getState() {
+        return this.state;
     }
     toJSON() {
         return {
-            chunk: [this.start, this.end],
-            is_filled: this.isFilled()
+            data: [this.start, this.end],
+            state: this.getState()
         };
     }
     intersection(chunk) {
         var start = _.max([this.start, chunk.start]);
         var end = _.min([this.end, chunk.end]);
+
         if (start >= end) return false;
 
-        var is_filled = this.isFilled() || chunk.isFilled();
+        var state = this.getState().mix(chunk.getState());
 
-        return new TimeChunk([start, end], is_filled);
-    }
-    union(chunk) {
-        return;
+        return new TimeChunk([start, end], state);
     }
 }
 

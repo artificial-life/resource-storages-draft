@@ -5,16 +5,31 @@ var AbstractVolume = require('./AbstractVolume.js');
 var Layer = require('./Layer.js');
 
 
-class MultiLayerVolume extends BasicVolume {
-    constructor(parameters_description, parent) {
+class MultiLayerVolume extends AbstractVolume {
+    constructor(parameters_description, LayerVolume, parent) {
         super(parameters_description, parent);
         this.params_set = false;
+        this.LayerVolume = LayerVolume;
+        this.layers = {};
     }
-    buildLayer(id_array, volume) {
-        if (!(volume instanceof AbstractVolume)) throw new Error('volume required');
+    build() {
+        throw new Error('abstract method. Must be specified directly in child');
+    }
+    buildLayer(id_array, volume_data) {
+        if (!volume_data) throw new Error('volume data required');
+
+        var volume = {};
+        if (volume_data instanceof AbstractVolume) {
+            volume = volume_data
+        } else {
+            volume = new this.LayerVolume();
+            volume.build(volume_data);
+        }
 
         var key_objects = this.getParams().makeKey(id_array);
         var layer = new Layer(key_objects, volume);
+
+        //@TODO:get it from this.LayerVolume
 
         if (!this.params_set) {
             this.params_set = true;

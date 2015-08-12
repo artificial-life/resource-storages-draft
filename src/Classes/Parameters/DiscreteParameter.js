@@ -1,6 +1,6 @@
 'use strict'
 
-var VolumeParameter = require('./VolumeParameter.js');
+var VolumeParameter = require('./Parameter.js');
 
 class DiscreteParameter extends VolumeParameter {
     constructor({

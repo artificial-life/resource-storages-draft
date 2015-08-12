@@ -89,7 +89,7 @@ gulp.task('es6-ll', function () {
 
 gulp.task('start', function () {
     nodemon({
-        script: 'build/draft.js',
+        script: 'build/index.js',
         ext: 'js',
         env: {
             'NODE_ENV': 'development'

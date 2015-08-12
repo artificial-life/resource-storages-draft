@@ -27,11 +27,11 @@ class Layer {
         return this.content.getParams();
     }
     extend(layer) {
-        var is_same = _.difference(layer.getKeyArray(), this.getKeyArray()).length === 0;
+        var is_same = (_.difference(layer.getKeyArray(), this.getKeyArray())).length === 0;
 
         if (!is_same) throw Error('Keys not equal');
 
-        var ext_content = layer.getConent();
+        var ext_content = layer.getContent();
 
         this.content.extend.apply(this.content, ext_content);
         return this;
