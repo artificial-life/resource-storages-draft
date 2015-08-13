@@ -2,6 +2,8 @@
 
 var VolumeParameter = require('./Parameter.js');
 
+//var KeyModel = {};
+
 class DiscreteParameter extends VolumeParameter {
     constructor({
         name, default_values

@@ -6,18 +6,19 @@ var Plan = require('./Plan.js');
 
 
 class PlanCollection extends MultiLayerVolume {
-    constructor(indexGlobalName) {
+    constructor(indexGlobalName, parent) {
         super([{
             type: "Index",
             name: indexGlobalName
-            }], Plan);
+            }], Plan, parent);
+        this.init_params = [].slice.apply(arguments);
     }
     build(count) {
         var primitive_volumes_data = [{
-            data: [0, 100],
+            data: [[0, 100]],
             state: 'a'
         }, {
-            data: [200, 300],
+            data: [[200, 400]],
             state: 'a'
         }];
 

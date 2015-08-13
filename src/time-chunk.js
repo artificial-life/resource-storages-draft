@@ -3,14 +3,19 @@
 var _ = require('lodash');
 var PrimitiveVolume = require('./Classes/PrimitiveVolume.js');
 
-const default_size = 5 * 1000 * 60;
-const max_count = 9999;
-
 class TimeChunk extends PrimitiveVolume {
     constructor(data, state = 'a') {
         super(state);
-        [this.start, this.end] = data;
-        this.resetQuery();
+        this.transformData(data);
+    }
+    transformData(data) {
+        if (_.isArray(data)) {
+            [[this.start, this.end]] = data;
+        } else {
+            [this.start, this.end] = data.time.data;
+        }
+
+        return this;
     }
     static getParamsDescription() {
         return [{
@@ -19,26 +24,13 @@ class TimeChunk extends PrimitiveVolume {
         }];
     }
     addParams(params) {
-        _.assign(this.filters, params);
 
-        if (!this.filters.size) throw new Error('Wrong size filter' + this.filters.size);
-        return this;
     }
     addParam(key, value) {
-        var data = {};
-        data[key] = value;
 
-        return this.addParams(data);
     }
     resetQuery() {
-        this.filters = {
-            size: default_size,
-            count: max_count,
-            startTime: this.start,
-            endTime: this.end
-        };
 
-        return this;
     }
     getCutPoints() {
         var cut_start = _.max([this.start, this.filters.startTime]);
@@ -65,32 +57,7 @@ class TimeChunk extends PrimitiveVolume {
         return slots;
     }
     reserve() {
-        var slots = this.query();
-        var allocated = slots.length;
-        var parts = [];
-
-        var [cut_start, ] = this.getCutPoints();
-
-        if (!allocated) return {
-            slots: []
-        };
-
-        var cut_end = cut_start + allocated * this.filters.size;
-
-        if (cut_start !== this.start) {
-            parts.push(new TimeChunk([this.start, cut_start]));
-        }
-
-        parts.push(new TimeChunk([cut_start, cut_end], true));
-
-        if (this.end !== cut_end) {
-            parts.push(new TimeChunk([cut_end, this.end]));
-        }
-
-        return {
-            slots: slots,
-            parts: parts
-        };
+        return '[reserved,unused]';
     }
     isReserved() {
         return this.state.isReserved();
@@ -106,7 +73,7 @@ class TimeChunk extends PrimitiveVolume {
     }
     toJSON() {
         return {
-            data: [this.start, this.end],
+            data: [[this.start, this.end]],
             state: this.getState()
         };
     }
@@ -118,7 +85,7 @@ class TimeChunk extends PrimitiveVolume {
 
         var state = this.getState().mix(chunk.getState());
 
-        return new TimeChunk([start, end], state);
+        return new TimeChunk([[start, end]], state);
     }
 }
 

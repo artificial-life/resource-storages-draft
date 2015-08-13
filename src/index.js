@@ -1,5 +1,7 @@
 'use strict'
 
+var _ = require('lodash');
+
 var PlanCollection = require('./PlanCollection.js');
 
 var operatorCollection = new PlanCollection('operator_id');
@@ -9,13 +11,12 @@ var serviceCollection = new PlanCollection('service_id');
 
 operatorCollection.build(5);
 serviceCollection.build(3);
-
-operatorCollection.observe({
+var result = operatorCollection.observe({
     'operator_id': {
-        start: 1,
+        start: 4,
         end: 10
     },
     'time': {
-        data: [0, 100]
+        data: [0, 300]
     }
 });

@@ -3,15 +3,19 @@
 var BasicVolume = require('./BasicVolume.js');
 var AbstractVolume = require('./AbstractVolume.js');
 var Layer = require('./Layer.js');
-var Query = require('./Query/query.js');
 
 class MultiLayerVolume extends AbstractVolume {
-    constructor(parameters_description, LayerVolume, parent) {
-        super(parameters_description, parent);
-        this.params_set = false;
+    constructor(discrete_parameters_description, LayerVolume, parent) {
+        super(discrete_parameters_description, parent);
         this.LayerVolume = LayerVolume;
+
+        var volume_params_description = LayerVolume.getPrimitiveVolumeType().getParamsDescription();
+        this.addParams(volume_params_description);
+
         this.layers = {};
-        this.query = new Query(this.getParams());
+    }
+    getContent() {
+        return this.layers;
     }
     build() {
         throw new Error('abstract method. Must be specified directly in child');
@@ -30,19 +34,10 @@ class MultiLayerVolume extends AbstractVolume {
         var key_objects = this.getParams().makeKey(id_array);
         var layer = new Layer(key_objects, volume);
 
-        //@TODO:get it from this.LayerVolume
-
-        if (!this.params_set) {
-            this.params_set = true;
-            var continuos_params = layer.getParams().Continuos();
-            this.getParams().addParams(continuos_params);
-        }
-
         return layer;
     }
     extend(layer) {
-        var key_array = layer.getKeyArray();
-        var key_string = key_array.join('|');
+        var key_string = layer.getKeyString();
 
         if (!this.layers.hasOwnProperty(key_string)) {
             this.layers[key_string] = layer;
@@ -53,17 +48,17 @@ class MultiLayerVolume extends AbstractVolume {
 
         return this;
     }
+
     observe(params) {
-        this.query.addParams(params);
+        var ML = this.constructor.bind(this, this.init_params);
+        var result = new ML();
 
-        var result = new MultiLayerVolume(this.getParams().getDescription(), this);
-
-        this.query.filter(this.layers, (layer, continuos_params) => {
+        this.query.reset().addParams(params).filter(this.getContent(), (layer, continuos_params) => {
             //console.log(layer, continuos_params);
             var observed = layer.observe(continuos_params);
             result.extend(observed);
         });
-        //_.forEach(this.layers, (layer) => result.extend(layer.observe(params)));
+
         return result;
     }
     reserve(params) {

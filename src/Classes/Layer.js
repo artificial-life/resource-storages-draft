@@ -1,24 +1,24 @@
 'use strict'
 
-
 var _ = require('lodash');
+
+var CompoundKey = require('./CompoundKey/CompoundKey.js');
 
 class Layer {
     constructor(key, content, parent) {
-
         if (!content) return false;
-
-        this.key = key;
+        this.compound_key = new CompoundKey(key);
         this.content = content;
         this.parent = parent || false;
     }
     getKey() {
-        return this.key;
+        return this.compound_key.getKey();
+    }
+    getKeyString() {
+        return this.compound_key.getKeyString();
     }
     getKeyArray() {
-        return _.map(this.key, (key_component) => {
-            return key_component.toString();
-        });
+        return this.compound_key.getKeyArray();
     }
     getContent() {
         return this.content;
@@ -37,20 +37,20 @@ class Layer {
         return this;
     }
     observe() {
-        return new Layer(this.key, this.content.observe.apply(this.content, arguments), this.parent || this);
+        return new Layer(this.getKey(), this.content.observe.apply(this.content, arguments), this.parent || this);
     }
     reserve() {
         //fully reserved link to layer or false
-        return new Layer(this.key, this.content.reserve.apply(this.content, arguments), this.parent || this);
+        return new Layer(this.getKey(), this.content.reserve.apply(this.content, arguments), this.parent || this);
     }
     union() {
-        return new Layer(this.key, this.content.union.apply(this.content, arguments), false);
+        return new Layer(this.getKey(), this.content.union.apply(this.content, arguments), false);
     }
     negative() {
-        return new Layer(this.key, this.content.negative.apply(this.content, arguments), false);
+        return new Layer(this.getKey(), this.content.negative.apply(this.content, arguments), false);
     }
     intersection() {
-        return new Layer(this.key, this.content.intersection.apply(this.content, arguments), false);
+        return new Layer(this.getKey(), this.content.intersection.apply(this.content, arguments), false);
     }
 
 }

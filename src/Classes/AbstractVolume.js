@@ -1,14 +1,23 @@
 'use strict'
 
 var Params = require('./ParametersHub.js');
+var Query = require('./Query/query.js');
 
 class AbstractVolume {
     constructor(parameters_description, parent) {
         this.parameters = new Params(parameters_description);
         this.parent = parent || false;
+        this.query = new Query(this.getParams());
+    }
+    addParams(params_descriptions) {
+        this.getParams().addParamsDescription(params_descriptions);
+        return this;
     }
     getParams() {
         return this.parameters;
+    }
+    getContent() {
+        throw new Error('Abstract function');
     }
     build() {
         throw new Error('Abstract function');

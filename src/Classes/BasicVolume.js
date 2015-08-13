@@ -7,11 +7,11 @@ class BasicVolume extends AbstractVolume {
         var parameters_description = PrimitiveVolume.getParamsDescription();
         super(parameters_description, parent);
 
-        this.primitiveVolume = PrimitiveVolume;
+        this.PrimitiveVolume = PrimitiveVolume;
         this.content = [];
     }
     buildPrimitiveVolume(item) {
-        return new this.primitiveVolume(item.data, item.state);
+        return item instanceof this.PrimitiveVolume ? item : new this.PrimitiveVolume(item.data, item.state);
     }
     extendPrimitive(primitive) {
         return this.content.push(primitive);

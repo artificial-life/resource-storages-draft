@@ -12,23 +12,23 @@ var discover = function (name) {
     return stored_types[name];
 }
 
-class Parameters {
+class ParametersHub {
     constructor(description) {
         this.params = {};
         this.params.discrete = [];
         this.params.continuos = [];
         this.by_name = {};
-        this.params_count = 0;
 
-        _.forEach(description, (param_desc) => {
-            var model = discover(param_desc.type);
-            var default_values = param_desc.default_values;
-            var global_name = param_desc.name;
+        this.addParamsDescription(description);
+    }
+    static makeParam(description) {
+        var model = discover(description.type);
+        var default_values = description.default_values;
+        var global_name = description.name;
 
-            var param = new model(global_name, default_values);
+        var param = new model(global_name, default_values);
 
-            this.addParam(param)
-        });
+        return param;
     }
     addParam(param) {
         var list = param.isDiscrete() ? 'discrete' : 'continuos';
@@ -44,6 +44,14 @@ class Parameters {
         _.forEach(params, (param) => {
             this.addParam(param);
         });
+    }
+    addParamsDescription(descriptions) {
+        _.forEach(descriptions, (description) => {
+            var param = ParametersHub.makeParam(description);
+            this.addParam(param);
+        });
+
+        return this;
     }
     hasParam(name) {
         return this.by_name.hasOwnProperty(name);
@@ -84,4 +92,4 @@ class Parameters {
 }
 
 
-module.exports = Parameters;
+module.exports = ParametersHub;

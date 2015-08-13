@@ -16,6 +16,9 @@ class IndexKey {
 }
 
 class IndexParameter extends DiscreteParameter {
+    static getKeyModel() {
+        return IndexKey;
+    }
     constructor(
         name = 'defualt_index', default_values = {
             start: 0,
