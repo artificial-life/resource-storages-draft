@@ -43,7 +43,7 @@ class Plan extends BasicVolume {
 
     }
     extractContent(plan) {
-        if (!(plan instanceof Plan || plan instanceof this.PrimitiveVolume)) throw new Error('Can not extract');
+        if (!(plan.constructor.name === this.constructor.name || plan instanceof this.PrimitiveVolume)) throw new Error('Can not extract');
 
         return plan instanceof Plan ? plan.getContent() : [plan];
     }
@@ -57,39 +57,7 @@ class Plan extends BasicVolume {
         return this.query.reset().addParams(params).filter(this);
     }
     reserve(params) {
-        //@TODO:avoid code duplication
-        /*
-                var sum_length = 0;
-                var left_slots = params.count || 9999;
-                var processed_chunks = [];
 
-                if (!params.size && params.startTime && params.endTime) {
-                    params.size = params.endTime - params.startTime;
-                }
-
-                var results = _.map(this.content, (chunk) => {
-                    //@TODO: use now() also
-
-                    var result = chunk.resetQuery()
-                        .addParams(params)
-                        .addParam('count', left_slots)
-                        .reserve();
-
-                    if (!result.slots.length) {
-                        processed_chunks.push(chunk);
-                    } else {
-                        processed_chunks = _.union(processed_chunks, result.parts);
-                    }
-
-                    left_slots -= result.slots.length;
-                    return result.slots;
-                });
-
-                this.content = processed_chunks;
-
-                var proccessed_results = this._processResults(results);
-
-                return proccessed_results;*/
     }
     getData() {
         var data = _.map(this.content, (chunk) => {

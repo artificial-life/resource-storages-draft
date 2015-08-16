@@ -3,14 +3,17 @@
 var _ = require('lodash');
 
 var PlanCollection = require('./PlanCollection.js');
+var PrimitiveCollection = require('./PrimitiveCollection.js');
 
 var operatorCollection = new PlanCollection('operator_id');
 var serviceCollection = new PlanCollection('service_id');
+var SkillsCollection = new PrimitiveCollection('operator_id', 'service_id');
 
 //console.log(operatorCollection);
 
 operatorCollection.build(5);
 serviceCollection.build(3);
+SkillsCollection.build(5, 3);
 var result = operatorCollection.observe({
     'operator_id': {
         start: 4,
@@ -20,3 +23,5 @@ var result = operatorCollection.observe({
         data: [0, 300]
     }
 });
+
+console.log(SkillsCollection);

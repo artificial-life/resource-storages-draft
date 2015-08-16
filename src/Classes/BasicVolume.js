@@ -14,7 +14,8 @@ class BasicVolume extends AbstractVolume {
         return item instanceof this.PrimitiveVolume ? item : new this.PrimitiveVolume(item.data, item.state);
     }
     extendPrimitive(primitive) {
-        return this.content.push(primitive);
+        this.content.push(primitive);
+        return this;
     }
     getContent() {
         return this.content;

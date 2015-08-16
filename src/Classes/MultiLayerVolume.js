@@ -22,7 +22,6 @@ class MultiLayerVolume extends AbstractVolume {
     }
     buildLayer(id_array, volume_data) {
         if (!volume_data) throw new Error('volume data required');
-
         var volume = {};
         if (volume_data instanceof AbstractVolume) {
             volume = volume_data
@@ -38,7 +37,6 @@ class MultiLayerVolume extends AbstractVolume {
     }
     extend(layer) {
         var key_string = layer.getKeyString();
-
         if (!this.layers.hasOwnProperty(key_string)) {
             this.layers[key_string] = layer;
             return this;

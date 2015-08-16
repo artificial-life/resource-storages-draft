@@ -3,9 +3,8 @@
 var _ = require('lodash');
 
 var State = require('./State.js');
-var BasicVolume = require('./BasicVolume.js');
 
-class PrimitiveVolume extends BasicVolume {
+class PrimitiveVolume {
     constructor(state, owner = false) {
         if (_.isString(state)) {
             this.state = new State(state, owner);
@@ -13,8 +12,8 @@ class PrimitiveVolume extends BasicVolume {
             this.state = state;
         }
     }
-    getContent() {
-        return this.state;
+    static getParamsDescription() {
+        return [];
     }
 }
 
