@@ -22,7 +22,9 @@ class PrimitiveCollection extends MultiLayerVolume {
             for (var j = 0; j < second_count; j += 1) {
                 counter += 1;
                 var state = (counter % 2) ? 'a' : 'na';
-                var layer = this.buildLayer([i, j], state);
+                var layer = this.buildLayer([i, j], {
+                    state: state
+                });
                 this.extend(layer);
             }
         }

@@ -15,6 +15,12 @@ class PrimitiveVolume {
     static getParamsDescription() {
         return [];
     }
+    getState() {
+        return this.state
+    }
+    getStateString() {
+        return this.state.toString()
+    }
 }
 
 module.exports = PrimitiveVolume;
