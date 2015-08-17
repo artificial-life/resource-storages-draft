@@ -26,6 +26,27 @@ class Range {
     inRange(n) {
         return this.array ? this.array.indexOf(n) !== -1 : _.inRange(n, this.start, this.end);
     }
+
+    [Symbol.iterator]() {
+        var self = this;
+        var result = {};
+        var is_array = !!this.array;
+        var current = is_array ? 0 : this.start;
+
+        result.next = () => {
+            var done = is_array ? self.array.length <= current : self.end < current;
+
+            var value = is_array ? self.array[current] : current;
+            current++;
+
+            return {
+                done: done,
+                value: value
+            }
+        };
+
+        return result;
+    }
 }
 
 module.exports = Range;

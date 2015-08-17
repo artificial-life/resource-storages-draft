@@ -40,7 +40,19 @@ var observe = SkillsCollection.observe({
         start: 4,
         end: 10
     },
-    'service_id': 2
+    'service_id': 2,
+    'time': {
+        data: 600
+    }
 });
 
-console.log(observe.getContent()['4|2'].getContent().getContent().getStateString());
+console.log(composite.observe({
+    'operator_id': {
+        start: 4,
+        end: 10
+    },
+    'service_id': 2,
+    'time': {
+        data: [0, 600]
+    }
+}));

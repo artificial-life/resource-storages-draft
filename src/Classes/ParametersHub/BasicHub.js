@@ -12,7 +12,7 @@ var discover = function (name) {
     return stored_types[name];
 }
 
-class ParametersHub {
+class BasicHub {
     constructor(description) {
         this.params = {};
         this.params.discrete = [];
@@ -47,7 +47,7 @@ class ParametersHub {
     }
     addParamsDescription(descriptions) {
         _.forEach(descriptions, (description) => {
-            var param = ParametersHub.makeParam(description);
+            var param = BasicHub.makeParam(description);
             this.addParam(param);
         });
 
@@ -92,4 +92,4 @@ class ParametersHub {
 }
 
 
-module.exports = ParametersHub;
+module.exports = BasicHub;

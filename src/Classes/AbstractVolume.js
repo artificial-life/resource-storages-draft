@@ -1,11 +1,11 @@
 'use strict'
 
-var Params = require('./ParametersHub.js');
+var ParametersHub = require('./ParametersHub/ParametersHub.js');
 var Query = require('./Query/query.js');
 
 class AbstractVolume {
     constructor(parameters_description, parent) {
-        this.parameters = new Params(parameters_description);
+        this.parameters = new ParametersHub(parameters_description, true);
         this.parent = parent || false;
         this.query = new Query(this.getParams());
     }
@@ -41,6 +41,5 @@ class AbstractVolume {
         throw new Error('Abstract function');
     }
 }
-
 
 module.exports = AbstractVolume;

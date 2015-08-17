@@ -51,11 +51,12 @@ class MultiLayerVolume extends AbstractVolume {
         var ML = this.constructor.bind(this, this.init_params);
         var result = new ML();
 
-        this.query.reset().addParams(params).filter(this.getContent(), (layer, continuos_params) => {
-            //console.log(layer, continuos_params);               
-            var observed = layer.observe(continuos_params);
-            result.extend(observed);
-        });
+        this.query.reset()
+            .addParams(params)
+            .filter(this.getContent(), (layer, continuos_params) => {
+                var observed = layer.observe(continuos_params);
+                result.extend(observed);
+            });
 
         return result;
     }

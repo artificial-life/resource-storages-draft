@@ -3,10 +3,15 @@
 var _ = require('lodash');
 var VolumeQuery = require('./VolumeQuery.js');
 var LayerQuery = require('./LayerQuery.js');
+var CompositeQuery = require('./CompositeQuery.js');
 
 class Query {
     constructor(params_hub) {
-        return params_hub.Discrete().length ? new LayerQuery(params_hub) : new VolumeQuery(params_hub);
+        if (params_hub.Discrete().length) {
+            return !!params_hub.composite ? new CompositeQuery(params_hub) : new LayerQuery(params_hub);
+        } else {
+            return new VolumeQuery(params_hub);
+        }
     }
 
 }

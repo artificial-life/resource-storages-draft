@@ -1,5 +1,7 @@
 'use strict'
 
+var _ = require('lodash');
+
 var CompositeVolume = require('./Classes/CompositeVolume.js');
 var Plan = require('./Plan.js');
 
@@ -7,31 +9,53 @@ class SOComposite extends CompositeVolume {
     constructor(firstId, secondId, parent) {
         super([{
             type: "Index",
-            name: firstId
+            name: firstId,
+            projection: (index) => {
+                return {
+                    'operators': index,
+                    'skills': index
+                };
+            }
             }, {
             type: "Index",
-            name: secondId
+            name: secondId,
+            projection: (index) => {
+                return {
+                    'services': index,
+                    'skills': index
+                };
+            }
             }], Plan, parent);
 
-        var projection = {
-            firstId: [{
-                'operator_id': 'linear'
-            }],
-            secondId: [{
-                'service_id': 'linear'
-            }],
-            volume: [{
-                action: 'intersection'
-            }]
-        }
+        var projection_fn = {};
+
+        projection_fn['volume'] = (time) => {
+            return {
+                'operators': time,
+                'services': time
+            };
+        };
+
+        this.projection = projection_fn;
+
+        var formula = (operator_volume, service_volume, skill) => {
+            return operator_volume.intersection(service_volume).intersection(skill);
+        };
+
+        this.setFormula(formula);
     }
     setIngredients(operators, services, skills) {
-        this.operators = operators;
-        this.services = services;
-        this.skills = skills;
+        this.ingredients = {};
+        this.ingredients.operators = operators;
+        this.ingredients.services = services;
+        this.ingredients.skills = skills;
     }
-    setFormula(formula) {
-        this.formula = formula;
+    observe(params) {
+
+        this.query.reset()
+            .addParams(params).filter((id) => {
+                console.log(id);
+            });
     }
 }
 
