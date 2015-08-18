@@ -26,9 +26,7 @@ class CompositeQuery extends LayerQuery {
             if (depth + 1 < this.names.length) {
                 this.buildFilter(depth + 1, path, callback);
             } else {
-                var r = this.hub.project(path);
-                console.log(r);
-                callback(path);
+                callback(this.hub.project(path));
             }
         }
     }

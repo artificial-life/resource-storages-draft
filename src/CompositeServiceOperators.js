@@ -54,7 +54,7 @@ class SOComposite extends CompositeVolume {
 
         this.query.reset()
             .addParams(params).filter((id) => {
-                console.log(id);
+                console.log('cons', id);
             });
     }
 }
