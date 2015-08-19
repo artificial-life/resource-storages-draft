@@ -2,11 +2,22 @@
 
 var _ = require('lodash');
 
-var CompositeVolume = require('./Classes/CompositeVolume.js');
+var CompositeMultiLayer = require('./Classes/CompositeMultiLayer.js');
+var ProjectionDescription = require('./Classes/ProjectionDescription.js');
 var Plan = require('./Plan.js');
 
-class SOComposite extends CompositeVolume {
+class SOComposite extends CompositeMultiLayer {
     constructor(firstId, secondId, parent) {
+
+        var projection_description = new ProjectionDescription(Plan, (time) => {
+            return {
+                'operators': time,
+                'services': time
+            };
+        }, ([operator_volume, service_volume, skill]) => {
+            return operator_volume.intersection(service_volume);
+        });
+
         super([{
             type: "Index",
             name: firstId,
@@ -25,24 +36,10 @@ class SOComposite extends CompositeVolume {
                     'skills': index
                 };
             }
-            }], Plan, parent);
+            }], projection_description, parent);
 
-        var projection_fn = {};
 
-        projection_fn['volume'] = (time) => {
-            return {
-                'operators': time,
-                'services': time
-            };
-        };
 
-        this.projection = projection_fn;
-
-        var formula = (operator_volume, service_volume, skill) => {
-            return operator_volume.intersection(service_volume).intersection(skill);
-        };
-
-        this.setFormula(formula);
     }
     setIngredients(operators, services, skills) {
         this.ingredients = {};
@@ -51,12 +48,16 @@ class SOComposite extends CompositeVolume {
         this.ingredients.skills = skills;
     }
     observe(params) {
-
+        var formula = this.projection_description.getFormula();
         this.query.reset()
-            .addParams(params).filter((id) => {
-                console.log('cons', id);
+            .addParams(params).filter(this.ingredients, (layers) => {
+                _.forEach(layers, (layer) => {
+                    console.log(layer);
+                });
+
             });
     }
+
 }
 
 module.exports = SOComposite;

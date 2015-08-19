@@ -6,14 +6,15 @@ var LayerQuery = require('./LayerQuery.js');
 var CompositeQuery = require('./CompositeQuery.js');
 
 class Query {
-    constructor(params_hub) {
+
+    static create(params_hub) {
         if (params_hub.Discrete().length) {
             return !!params_hub.composite ? new CompositeQuery(params_hub) : new LayerQuery(params_hub);
         } else {
             return new VolumeQuery(params_hub);
         }
     }
+};
 
-}
 
 module.exports = Query;

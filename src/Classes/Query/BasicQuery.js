@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 
-class AbstractQuery {
+class BasicQuery {
     constructor(hub, watched) {
         this.defaults = {};
         this.hub = hub;
@@ -38,4 +38,4 @@ class AbstractQuery {
     }
 }
 
-module.exports = AbstractQuery;
+module.exports = BasicQuery;

@@ -1,6 +1,7 @@
 'use strict'
 
 var _ = require('lodash');
+var Deco = require('./Classes/ProjectionDecorator.js');
 
 var PlanCollection = require('./PlanCollection.js');
 var PrimitiveCollection = require('./PrimitiveCollection.js');

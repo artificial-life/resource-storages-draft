@@ -5,9 +5,9 @@ var Query = require('./Query/query.js');
 
 class AbstractVolume {
     constructor(parameters_description, parent) {
-        this.parameters = new ParametersHub(parameters_description, true);
+        this.parameters = ParametersHub.create(parameters_description, true);
         this.parent = parent || false;
-        this.query = new Query(this.getParams());
+        this.query = Query.create(this.getParams());
     }
     addParams(params_descriptions) {
         this.getParams().addParamsDescription(params_descriptions);

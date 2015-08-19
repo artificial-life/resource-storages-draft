@@ -8,13 +8,19 @@ class CompositeHub extends BasicHub {
     constructor(description) {
         super(description);
         this.composite = true;
-        this.extractProjection(description);
     }
     extractProjection(description) {
-        this.projection = {};
+        this.projection = this.projection || {};
+
         _.forEach(description, (param, name) => {
             this.projection[param.name] = param.projection;
         });
+    }
+    addParamsDescription(descriptions) {
+        super.addParamsDescription(descriptions);
+        this.extractProjection(descriptions);
+
+        return this;
     }
     project(params) {
         var result = {};
@@ -28,7 +34,16 @@ class CompositeHub extends BasicHub {
             })
 
         });
+
         return result;
+    }
+    setProjection(projection_data) {
+        var name = projection_data.name;
+        var projection = projection_data.projection;
+
+        this.projection = this.projection || {};
+        if (this.projection.hasOwnProperty(name)) this.projection[name] = projection;
+        return this;
     }
 }
 

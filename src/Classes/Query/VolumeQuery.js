@@ -1,9 +1,9 @@
 'use strict'
 
 var _ = require('lodash');
-var Abstract = require('./AbstractQuery.js');
+var BasicQuery = require('./BasicQuery.js');
 
-class VolumeQuery extends Abstract {
+class VolumeQuery extends BasicQuery {
     constructor(params_hub, default_params = {}) {
         super(params_hub, 'continuos');
     }

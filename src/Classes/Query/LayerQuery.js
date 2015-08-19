@@ -2,9 +2,9 @@
 
 var _ = require('lodash');
 var Range = require('./Range.js');
-var Abstract = require('./AbstractQuery.js');
+var BasicQuery = require('./BasicQuery.js');
 
-class LayerQuery extends Abstract {
+class LayerQuery extends BasicQuery {
     constructor(params_hub) {
         super(params_hub, 'discrete');
         this.continuos_filters = {};
@@ -45,7 +45,8 @@ class LayerQuery extends Abstract {
 
         _.forEach(layers, (layer) => {
             if (this.inRange(layer.getKey())) {
-                callback(layer, this.continuos_filters);
+                var observed = layer.observe(this.continuos_filters);
+                callback(observed);
             }
         });
         return this;

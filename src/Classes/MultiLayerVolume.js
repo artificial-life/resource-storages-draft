@@ -53,8 +53,7 @@ class MultiLayerVolume extends AbstractVolume {
 
         this.query.reset()
             .addParams(params)
-            .filter(this.getContent(), (layer, continuos_params) => {
-                var observed = layer.observe(continuos_params);
+            .filter(this.getContent(), (observed) => {
                 result.extend(observed);
             });
 

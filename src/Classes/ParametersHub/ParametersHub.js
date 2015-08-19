@@ -5,7 +5,7 @@ var BasicHub = require('./BasicHub.js');
 var CompositeHub = require('./CompositeHub.js');
 
 class ParametersHub {
-    constructor(data) {
+    static create(data) {
         var is_composite = false;
         var description = data;
 

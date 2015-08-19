@@ -4,6 +4,7 @@ var Promise = require('bluebird');
 var _ = require('lodash');
 var TimeChunk = require('./time-chunk.js');
 var BasicVolume = require('./Classes/BasicVolume.js');
+var ZeroDimensional = require('./Classes/ZeroDimensionalVolume.js');
 
 class Plan extends BasicVolume {
     constructor(parent) {
@@ -69,7 +70,17 @@ class Plan extends BasicVolume {
         return _.flatten(results);
     }
     intersection(plan) {
-        var other_content = plan instanceof Plan ? plan.getContent() : [plan];
+        var other_content;
+
+        if (plan instanceof ZeroDimensional) {
+            var state = plan.getContent().getState();
+            var chunk = new TimeChunk([-Infinity, Infinity], state);
+            other_content = [chunk];
+
+        } else {
+            other_content = plan instanceof Plan ? plan.getContent() : [plan];
+        }
+
         var result = [];
 
         _(this.getContent()).forEach((chunk) => {
