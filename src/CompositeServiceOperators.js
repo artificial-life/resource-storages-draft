@@ -15,7 +15,9 @@ class SOComposite extends CompositeMultiLayer {
                 'services': time
             };
         }, ([operator_volume, service_volume, skill]) => {
-            return operator_volume.intersection(service_volume);
+            if (!operator_volume || !service_volume || !skill) return false;
+
+            return operator_volume.intersection(service_volume).intersection(skill);
         });
 
         super([{
@@ -39,7 +41,7 @@ class SOComposite extends CompositeMultiLayer {
             }], projection_description, parent);
 
 
-
+        this.init_params = [].slice.apply(arguments);
     }
     setIngredients(operators, services, skills) {
         this.ingredients = {};
@@ -47,16 +49,7 @@ class SOComposite extends CompositeMultiLayer {
         this.ingredients.services = services;
         this.ingredients.skills = skills;
     }
-    observe(params) {
-        var formula = this.projection_description.getFormula();
-        this.query.reset()
-            .addParams(params).filter(this.ingredients, (layers) => {
-                _.forEach(layers, (layer) => {
-                    console.log(layer);
-                });
 
-            });
-    }
 
 }
 

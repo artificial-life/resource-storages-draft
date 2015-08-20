@@ -1,8 +1,12 @@
 'use strict'
 
+var _ = require('lodash');
+
 var BasicVolume = require('./BasicVolume.js');
 var AbstractVolume = require('./AbstractVolume.js');
 var Layer = require('./Layer.js');
+
+var bind = _.spread(_.bind);
 
 class MultiLayerVolume extends AbstractVolume {
     constructor(discrete_parameters_description, LayerVolume, parent) {
@@ -14,8 +18,12 @@ class MultiLayerVolume extends AbstractVolume {
 
         this.layers = {};
     }
-    getContent() {
-        return this.layers;
+    getContent(key) {
+        if (!key) {
+            return this.layers;
+        } else if (this.layers.hasOwnProperty(key)) {
+            return this.layers[key];
+        } else return false;
     }
     build() {
         throw new Error('abstract method. Must be specified directly in child');
@@ -46,10 +54,16 @@ class MultiLayerVolume extends AbstractVolume {
 
         return this;
     }
+    emptyCopy() {
 
-    observe(params) {
-        var ML = this.constructor.bind(this, this.init_params);
+        var ML = bind([this.constructor, this].concat(this.init_params));
         var result = new ML();
+        result.parent = this;
+
+        return result;
+    }
+    observe(params) {
+        var result = this.emptyCopy();
 
         this.query.reset()
             .addParams(params)

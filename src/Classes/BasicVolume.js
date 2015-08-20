@@ -1,6 +1,7 @@
 'use strict'
 
 var AbstractVolume = require('./AbstractVolume.js');
+var ZeroDimensional = require('./ZeroDimensionalVolume.js');
 
 class BasicVolume extends AbstractVolume {
     constructor(PrimitiveVolume, parent) {
@@ -19,6 +20,25 @@ class BasicVolume extends AbstractVolume {
     }
     getContent() {
         return this.content;
+    }
+    extractContent(item) {
+        var is_same_type = item.constructor.name === this.constructor.name;
+
+        var is_primitive = item instanceof this.PrimitiveVolume;
+        var is_zero_dim = item instanceof ZeroDimensional;
+
+        if (!(is_same_type || is_primitive || is_zero_dim)) throw new Error('Can not extract');
+
+        var content = [];
+
+        if (is_zero_dim) {
+            var state = item.getContent().getState();
+            var default_primitive = new this.PrimitiveVolume([], state);
+            return [default_primitive];
+        } else content = is_same_type ? item.getContent() : [item]
+
+
+        return content;
     }
 }
 

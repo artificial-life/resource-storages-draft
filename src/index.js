@@ -36,24 +36,25 @@ SkillsCollection.build(5, 3);
 //    }
 //});
 
-var observe = SkillsCollection.observe({
+var ob_skills = SkillsCollection.observe({
     'operator_id': {
-        start: 4,
+        start: 0,
         end: 10
+    },
+    'service_id': 2
+});
+/*
+console.log(_.map(ob_skills.getContent(), (layer, key) => key + ' ' + layer.getContent().getContent().getState().toString()));
+*/
+var ob_comp = composite.observe({
+    'operator_id': {
+        start: 0,
+        end: 4
     },
     'service_id': 2,
     'time': {
-        data: 600
+        data: [150, 300]
     }
 });
 
-console.log(composite.observe({
-    'operator_id': {
-        start: 4,
-        end: 10
-    },
-    'service_id': 2,
-    'time': {
-        data: [0, 600]
-    }
-}));
+console.log(ob_comp.getContent('2|2').getContent().getContent());

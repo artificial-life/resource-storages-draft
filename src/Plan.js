@@ -43,11 +43,7 @@ class Plan extends BasicVolume {
         return this;
 
     }
-    extractContent(plan) {
-        if (!(plan.constructor.name === this.constructor.name || plan instanceof this.PrimitiveVolume)) throw new Error('Can not extract');
 
-        return plan instanceof Plan ? plan.getContent() : [plan];
-    }
     sort() {
         this.content = _.sortBy(this.content, function (chunk) {
             return this.start;
@@ -70,15 +66,18 @@ class Plan extends BasicVolume {
         return _.flatten(results);
     }
     intersection(plan) {
-        var other_content;
+        var other_content = [];
 
         if (plan instanceof ZeroDimensional) {
             var state = plan.getContent().getState();
-            var chunk = new TimeChunk([-Infinity, Infinity], state);
+            var chunk = new TimeChunk([[-Infinity, Infinity]], state);
             other_content = [chunk];
-
-        } else {
-            other_content = plan instanceof Plan ? plan.getContent() : [plan];
+        } else
+        if (plan instanceof Plan) {
+            other_content = plan.getContent();
+        } else
+        if (plan instanceof TimeChunk) {
+            other_content = [plan];
         }
 
         var result = [];

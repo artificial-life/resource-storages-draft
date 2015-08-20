@@ -79,6 +79,16 @@ class BasicHub {
     makeKey(data_array) {
         return _.map(this.Discrete(), (param, index) => param.makeKey(data_array[index]));
     }
+    keyObjectToArray(obj) {
+        var result = [];
+        for (var name in obj) {
+            if (this.hasParam(name)) {
+                var id = this.by_name[name].list_id;
+                result[id] = obj[name];
+            }
+        }
+        return result;
+    }
     getNames(list) {
         switch (list.toLowerCase()) {
         case 'continuos':

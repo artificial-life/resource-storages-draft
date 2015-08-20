@@ -45,6 +45,34 @@ class CompositeHub extends BasicHub {
         if (this.projection.hasOwnProperty(name)) this.projection[name] = projection;
         return this;
     }
+    getDescription(list) {
+        if (list == 'discrete') {
+            return _.map(this.Discrete(), (param) => {
+
+                var result = param.getDescription();
+                result.projection = this.projection[result.name];
+
+                return result;
+            });
+        } else
+        if (list == 'continuos') {
+            return _.map(this.Continuos(), (param) => {
+
+                var result = param.getDescription();
+                result.projection = this.projection[result.name];
+
+                return result;
+            });
+        } else {
+            return _.map(this.All(), (param) => {
+
+                var result = param.getDescription();
+                result.projection = this.projection[result.name];
+
+                return result;
+            });
+        }
+    }
 }
 
 
