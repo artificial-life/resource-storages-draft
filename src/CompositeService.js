@@ -32,23 +32,27 @@ class CompositeService extends CompositeMultiLayer {
         }*/
             ];
 
+        this.layer_decoration = {
+            projection: (time) => {
+                return {
+                    'office_schedule': time
+                };
+            },
+            formula: (volumes_to_reduce) => {
+                var united_volume = _.first(volumes_to_reduce) || false;
+
+                _.forEach(volumes_to_reduce, (volume) => {
+                    united_volume = united_volume.intersection(volume)
+                });
+
+                return united_volume;
+            }
+        };
+
         this.init_params = [].slice.apply(arguments);
     }
-    get projection_description() {
-        return new ProjectionDescription(Plan, (time) => {
-            return {
-                'office_schedule': time
-            };
-        }, (volumes_to_reduce) => {
-            var united_volume = _.first(volumes_to_reduce) || false;
-
-            _.forEach(volumes_to_reduce, (volume) => {
-                united_volume = united_volume.intersection(volume)
-            });
-
-            return united_volume;
-        });
-
+    get LayerVolume() {
+        return Plan;
     }
 
 }

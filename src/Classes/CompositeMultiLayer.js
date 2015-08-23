@@ -9,38 +9,29 @@ class CompositeMultiLayer extends MultiLayerVolume {
         super(parent);
         this.ingredients = {};
     }
-    get projection_description() {
-        throw new Error('CompositeMultiLayer abstract method');
-    }
     set description(discrete_parameters_description) {
         var param_description = {
             description: discrete_parameters_description,
             composite: true
         };
         super.description = param_description;
-        //@TODO 
-
-        this.getParams().setProjection(this.projection_description.getProjection());
+    }
+    set layer_decoration(decoration) {
+        this.getParams().setContinuosDecorators(decoration);
     }
     get LayerVolume() {
-        return this.projection_description.getVolume();
+        throw new Error('CompositeMultiLayer abstract method');
     }
     setIngredients(ingredients) {
         this.ingredients = ingredients
     }
     observe(params) {
-        var formula = this.projection_description.getFormula();
         var result = this.emptyCopy();
 
         this.query.reset()
-            .addParams(params).filter(this.ingredients, (key_data, layers) => {
-                var composite_volume = formula(layers);
-
-                if (composite_volume) {
-                    var key_array = this.getParams().keyObjectToArray(key_data);
-                    var layer = this.buildLayer(key_array, composite_volume);
-                    result.extend(layer);
-                }
+            .addParams(params).filter(this.ingredients, (key, composed) => {
+                var layer = this.buildLayer(key, composed);
+                result.extend(layer);
             });
 
         return result;

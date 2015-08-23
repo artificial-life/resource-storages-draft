@@ -10,10 +10,8 @@ class CompositeHub extends BasicHub {
         this.composite = true;
     }
     extractProjection(description) {
-        this.projection = this.projection || {};
-
-        _.forEach(description, (param, name) => {
-            this.projection[param.name] = param.projection;
+        _.forEach(description, (param) => {
+            if (param.projection) this.setProjection(param.name, param.projection)
         });
     }
     addParamsDescription(descriptions) {
@@ -37,13 +35,31 @@ class CompositeHub extends BasicHub {
 
         return result;
     }
-    setProjection(projection_data) {
-        var name = projection_data.name;
-        var projection = projection_data.projection;
-
+    setProjection(name, projection) {
         this.projection = this.projection || {};
-        if (this.projection.hasOwnProperty(name)) this.projection[name] = projection;
+
+        if (!this.hasParam(name)) throw new Error('Missing param ' + name);
+
+        this.projection[name] = projection;
         return this;
+    }
+    setFormula(name, formula) {
+        this.formula = this.formula || {};
+        if (!this.hasParam(name)) throw new Error('Missing param ' + name);
+
+        this.formula[name] = formula;
+        return this;
+    }
+    setContinuosDecorators(decorator) {
+        var param_name = this.Continuos()[0].getName();
+        var projection = decorator.projection;
+        var formula = decorator.formula;
+
+        this.setProjection(param_name, projection);
+        this.setFormula(param_name, formula);
+    }
+    getFormula() {
+        return this.formula;
     }
     getDescription(list) {
         if (list == 'discrete') {

@@ -13,7 +13,9 @@ class PrimitiveVolume {
         }
         this.data = init_data;
     }
-    set data(init_data) {}
+    set data(init_data) {
+        //primitive volume has no data, lol
+    }
     static get params_description() {
         return [];
     }

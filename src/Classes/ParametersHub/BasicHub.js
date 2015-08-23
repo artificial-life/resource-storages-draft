@@ -77,7 +77,11 @@ class BasicHub {
         return _.map(this.All(), (param) => param.getDescription());
     }
     makeKey(data_array) {
-        return _.map(this.Discrete(), (param, index) => param.makeKey(data_array[index]));
+        if (_.isArray(data_array))
+            return _.map(this.Discrete(), (param, index) => param.makeKey(data_array[index]));
+
+        if (_.isObject(data_array))
+            return _.map(this.Discrete(), (param) => param.makeKey(data_array[param.getName()]));
     }
     keyObjectToArray(obj) {
         var result = [];

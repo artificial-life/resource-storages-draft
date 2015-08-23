@@ -3,13 +3,11 @@
 var _ = require('lodash');
 
 var CompositeMultiLayer = require('./Classes/CompositeMultiLayer.js');
-var ProjectionDescription = require('./Classes/ProjectionDescription.js');
 var Plan = require('./Plan.js');
 
 class SOComposite extends CompositeMultiLayer {
     constructor(firstId, secondId, parent) {
         super(parent);
-
         this.description = [{
             type: "Index",
             name: firstId,
@@ -30,20 +28,26 @@ class SOComposite extends CompositeMultiLayer {
             }
             }];
 
+        this.layer_decoration = {
+            projection: (time) => {
+                return {
+                    'operators': time,
+                    'services': time
+                };
+            },
+            formula: ([operator_volume, service_volume, skill]) => {
+                if (!operator_volume || !service_volume || !skill) return false;
+
+                return operator_volume.intersection(service_volume).intersection(skill);
+            }
+        };
+
         this.init_params = [].slice.apply(arguments);
     }
-    get projection_description() {
-        return new ProjectionDescription(Plan, (time) => {
-            return {
-                'operators': time,
-                'services': time
-            };
-        }, ([operator_volume, service_volume, skill]) => {
-            if (!operator_volume || !service_volume || !skill) return false;
+    get LayerVolume() {
+        return Plan;
+    }
 
-            return operator_volume.intersection(service_volume).intersection(skill);
-        });
-    };
 }
 
 module.exports = SOComposite;

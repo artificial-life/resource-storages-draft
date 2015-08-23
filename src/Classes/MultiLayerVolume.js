@@ -14,14 +14,10 @@ class MultiLayerVolume extends AbstractVolume {
         this.layers = {};
     }
     set description(discrete_params_description) {
-        var volume_params_description = this.LayerVolume.PrimitiveVolume.params_description;
-        //console.log(super.description);
-        //!!! error here, discrete_params_description can be composite and represented as object
-        //  console.log('disc', discrete_params_description);
-        //    console.log('cont', volume_params_description);
         super.description = discrete_params_description;
+
+        var volume_params_description = this.LayerVolume.PrimitiveVolume.params_description;
         this.getParams().addParamsDescription(volume_params_description);
-        // console.log(this.getParams());
     }
     get LayerVolume() {
         throw new Error('MultiLayerVolume abstract property');
@@ -32,6 +28,12 @@ class MultiLayerVolume extends AbstractVolume {
         } else if (this.layers.hasOwnProperty(key)) {
             return this.layers[key];
         } else return false;
+    }
+    getLayerVolume(key) {
+        if (this.layers.hasOwnProperty(key)) {
+            return this.layers[key].getContent();
+        } else
+            return false;
     }
     build() {
         throw new Error('abstract method. Must be specified directly in child');

@@ -11,16 +11,30 @@ class CompositeQuery extends LayerQuery {
     filter(ingredients, callback) {
         this.param_names = _.keys(this.filters);
         var continuos_filters = this.hub.project(this.continuos_filters);
+        //@TODO: this should be reworked in future if we would have multiple basic volumes in layers
+        var names = [];
+        _.forEach(ingredients, (ingredient) => {
+            names = _.union(names, ingredient.getParams().getNames('continuos'));
+        });
+        var formula_name = names[0];
+        /*=====================*/
+
+        var formula = this.hub.getFormula()[formula_name];
+
         this.buildFilter(0, {}, (path) => {
             var discrete_params = this.hub.project(path);
             var filters = _.merge(continuos_filters, discrete_params);
-            //console.log(filters);
-            var result = _.map(ingredients, (ingredient, name) => {
-                var content = ingredient.observe(filters[name]).getContent();
-                var keys = _.keys(content);
-                return keys.length ? content[keys[0]].getContent() : false;
+
+            var layers = _.map(ingredients, (ingredient, name) => {
+                var extracted = ingredient.observe(filters[name]);
+                var first_key = _.first(_.keys(extracted.getContent()));
+
+                return extracted.getLayerVolume(first_key);
             });
-            callback(path, result);
+
+            var composite_volume = formula(layers);
+
+            if (composite_volume) callback(path, composite_volume)
         });
     }
     buildFilter(depth, path, callback) {
