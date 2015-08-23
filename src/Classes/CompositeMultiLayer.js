@@ -5,24 +5,28 @@ var _ = require('lodash');
 var MultiLayerVolume = require('./MultiLayerVolume.js');
 
 class CompositeMultiLayer extends MultiLayerVolume {
-    constructor(discrete_parameters_description, projection_description, parent) {
+    constructor(parent) {
+        super(parent);
+        this.ingredients = {};
+    }
+    get projection_description() {
+        throw new Error('CompositeMultiLayer abstract method');
+    }
+    set description(discrete_parameters_description) {
         var param_description = {
             description: discrete_parameters_description,
             composite: true
         };
-        var LayerVolume = projection_description.getVolume();
+        super.description = param_description;
+        //@TODO 
 
-        super(param_description, LayerVolume, parent);
-
-        this.projection_description = projection_description;
-
-        this.getParams().setProjection(projection_description.getProjection());
+        this.getParams().setProjection(this.projection_description.getProjection());
     }
-    setFormula(formula) {
-        this.formula = formula;
+    get LayerVolume() {
+        return this.projection_description.getVolume();
     }
-    setIngredients(ingredints_array) {
-        this.ingredients = ingredints_array;
+    setIngredients(ingredients) {
+        this.ingredients = ingredients
     }
     observe(params) {
         var formula = this.projection_description.getFormula();

@@ -20,7 +20,7 @@ class ProjectionDescription {
         return this.formula;
     }
     getParamNames() {
-        return this.volume.getPrimitiveVolumeType().getParamsDescription();
+        return this.volume.PrimitiveVolume.params_description;
     }
 
 }

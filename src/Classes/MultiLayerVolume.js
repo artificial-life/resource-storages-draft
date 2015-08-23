@@ -9,14 +9,22 @@ var Layer = require('./Layer.js');
 var bind = _.spread(_.bind);
 
 class MultiLayerVolume extends AbstractVolume {
-    constructor(discrete_parameters_description, LayerVolume, parent) {
-        super(discrete_parameters_description, parent);
-        this.LayerVolume = LayerVolume;
-
-        var volume_params_description = LayerVolume.getPrimitiveVolumeType().getParamsDescription();
-        this.addParams(volume_params_description);
-
+    constructor(parent) {
+        super(parent);
         this.layers = {};
+    }
+    set description(discrete_params_description) {
+        var volume_params_description = this.LayerVolume.PrimitiveVolume.params_description;
+        //console.log(super.description);
+        //!!! error here, discrete_params_description can be composite and represented as object
+        //  console.log('disc', discrete_params_description);
+        //    console.log('cont', volume_params_description);
+        super.description = discrete_params_description;
+        this.getParams().addParamsDescription(volume_params_description);
+        // console.log(this.getParams());
+    }
+    get LayerVolume() {
+        throw new Error('MultiLayerVolume abstract property');
     }
     getContent(key) {
         if (!key) {

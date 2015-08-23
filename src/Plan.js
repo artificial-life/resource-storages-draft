@@ -7,11 +7,11 @@ var BasicVolume = require('./Classes/BasicVolume.js');
 var ZeroDimensional = require('./Classes/ZeroDimensionalVolume.js');
 
 class Plan extends BasicVolume {
-    constructor(parent) {
-        super(Plan.getPrimitiveVolumeType(), parent);
-    }
-    static getPrimitiveVolumeType() {
+    static get PrimitiveVolume() {
         return TimeChunk;
+    }
+    get PrimitiveVolume() {
+        return Plan.PrimitiveVolume;
     }
     build(data) {
         //build from state 

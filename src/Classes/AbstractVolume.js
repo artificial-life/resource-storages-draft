@@ -4,10 +4,15 @@ var ParametersHub = require('./ParametersHub/ParametersHub.js');
 var Query = require('./Query/query.js');
 
 class AbstractVolume {
-    constructor(parameters_description, parent) {
-        this.parameters = ParametersHub.create(parameters_description, true);
+    constructor(parent) {
         this.parent = parent || false;
+    }
+    set description(value) {
+        this.parameters = ParametersHub.create(value, true);
         this.query = Query.create(this.getParams());
+    }
+    get description() {
+        throw new Error('Abstract Volume method "description"');
     }
     addParams(params_descriptions) {
         this.getParams().addParamsDescription(params_descriptions);

@@ -4,10 +4,10 @@ var _ = require('lodash');
 var PrimitiveVolume = require('./Classes/PrimitiveVolume.js');
 
 class TimeChunk extends PrimitiveVolume {
-    constructor(description, state = 'a') {
-        super(description, state);
+    constructor(init_data, state = 'a') {
+        super(init_data, state);
     }
-    readDescription(description) {
+    set data(description) {
         this.default = [[-Infinity, Infinity]];
 
         if (_.isArray(description)) {
@@ -18,13 +18,12 @@ class TimeChunk extends PrimitiveVolume {
 
         return this;
     }
-    static getParamsDescription() {
+    static get params_description() {
         return [{
             type: 'volume_definition',
             name: 'time'
         }];
     }
-
     reserve() {
         return '[reserved,unused]';
     }

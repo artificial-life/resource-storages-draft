@@ -4,12 +4,16 @@ var AbstractVolume = require('./AbstractVolume.js');
 var ZeroDimensional = require('./ZeroDimensionalVolume.js');
 
 class BasicVolume extends AbstractVolume {
-    constructor(PrimitiveVolume, parent) {
-        var parameters_description = PrimitiveVolume.getParamsDescription();
-        super(parameters_description, parent);
-
-        this.PrimitiveVolume = PrimitiveVolume;
+    constructor(parent) {
+        super(parent);
+        this.description = this.PrimitiveVolume.params_description;
         this.content = [];
+    }
+    static get PrimitiveVolume() {
+        throw new Error('BasicVolume: Abstract static property call');
+    }
+    get PrimitiveVolume() {
+        throw new Error('BasicVolume: Abstract property call');
     }
     buildPrimitiveVolume(item) {
         return item instanceof this.PrimitiveVolume ? item : new this.PrimitiveVolume(item.data, item.state);

@@ -5,16 +5,16 @@ var _ = require('lodash');
 var State = require('./State.js');
 
 class PrimitiveVolume {
-    constructor(description, state, owner = false) {
+    constructor(init_data, state, owner = false) {
         if (_.isString(state)) {
             this.state = new State(state, owner);
         } else if (state instanceof State) {
             this.state = state;
         }
-        this.readDescription(description);
+        this.data = init_data;
     }
-    readDescription() {}
-    static getParamsDescription() {
+    set data(init_data) {}
+    static get params_description() {
         return [];
     }
     getState() {

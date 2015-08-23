@@ -8,19 +8,9 @@ var Plan = require('./Plan.js');
 
 class SOComposite extends CompositeMultiLayer {
     constructor(firstId, secondId, parent) {
+        super(parent);
 
-        var projection_description = new ProjectionDescription(Plan, (time) => {
-            return {
-                'operators': time,
-                'services': time
-            };
-        }, ([operator_volume, service_volume, skill]) => {
-            if (!operator_volume || !service_volume || !skill) return false;
-
-            return operator_volume.intersection(service_volume).intersection(skill);
-        });
-
-        super([{
+        this.description = [{
             type: "Index",
             name: firstId,
             projection: (index) => {
@@ -38,19 +28,22 @@ class SOComposite extends CompositeMultiLayer {
                     'skills': index
                 };
             }
-            }], projection_description, parent);
-
+            }];
 
         this.init_params = [].slice.apply(arguments);
     }
-    setIngredients(operators, services, skills) {
-        this.ingredients = {};
-        this.ingredients.operators = operators;
-        this.ingredients.services = services;
-        this.ingredients.skills = skills;
-    }
+    get projection_description() {
+        return new ProjectionDescription(Plan, (time) => {
+            return {
+                'operators': time,
+                'services': time
+            };
+        }, ([operator_volume, service_volume, skill]) => {
+            if (!operator_volume || !service_volume || !skill) return false;
 
-
+            return operator_volume.intersection(service_volume).intersection(skill);
+        });
+    };
 }
 
 module.exports = SOComposite;

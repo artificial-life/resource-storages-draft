@@ -18,7 +18,7 @@ class VolumeQuery extends BasicQuery {
     }
     filter(volume) {
         var Primitive = volume.PrimitiveVolume;
-        var descriptions = Primitive.getParamsDescription();
+        var descriptions = Primitive.params_description;
         var search_volume = new Primitive(this.filters);
 
         return volume.intersection(search_volume);

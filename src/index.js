@@ -1,24 +1,25 @@
 'use strict'
 
 var _ = require('lodash');
-var Deco = require('./Classes/ProjectionDecorator.js');
 
 var PlanCollection = require('./PlanCollection.js');
 var PrimitiveCollection = require('./PrimitiveCollection.js');
 var Composite = require('./CompositeServiceOperators.js');
+var Reduce = require('./CompositeService.js');
 
 var operatorCollection = new PlanCollection('operator_id');
 var serviceCollection = new PlanCollection('service_id');
 var SkillsCollection = new PrimitiveCollection('operator_id', 'service_id');
 
-var composite = new Composite('operator_id', 'service_id');
+var office_shcedule = new Composite('operator_id', 'service_id');
+//var reduce = new Reduce('operator_id');
 
-composite.setIngredients(operatorCollection, serviceCollection, SkillsCollection);
-composite.setFormula(function () {
 
+office_shcedule.setIngredients({
+    operators: operatorCollection,
+    services: serviceCollection,
+    skills: SkillsCollection
 });
-
-//console.log(operatorCollection);
 
 operatorCollection.build(5);
 serviceCollection.build(3);
@@ -43,10 +44,8 @@ var ob_skills = SkillsCollection.observe({
     },
     'service_id': 2
 });
-/*
-console.log(_.map(ob_skills.getContent(), (layer, key) => key + ' ' + layer.getContent().getContent().getState().toString()));
-*/
-var ob_comp = composite.observe({
+
+var ob_comp = office_shcedule.observe({
     'operator_id': {
         start: 0,
         end: 4

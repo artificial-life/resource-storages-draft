@@ -7,13 +7,18 @@ var ZeroDimensional = require('./Classes/ZeroDimensionalVolume.js');
 
 class PrimitiveCollection extends MultiLayerVolume {
     constructor(firstIndexName, secondIndexName, parent) {
-        super([{
+        super(parent);
+        this.description = [{
             type: "Index",
             name: firstIndexName
             }, {
             type: "Index",
             name: secondIndexName
-            }], ZeroDimensional, parent);
+            }];
+        this.init_params = [].slice.apply(arguments);
+    }
+    get LayerVolume() {
+        return ZeroDimensional;
     }
     build(first_count, second_count) {
         //only test
