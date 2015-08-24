@@ -31,7 +31,6 @@ class IndexParameter extends DiscreteParameter {
     makeKey(data) {
         return new IndexKey(data, this.getName());
     }
-
 }
 
 module.exports = IndexParameter;

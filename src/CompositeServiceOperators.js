@@ -11,20 +11,26 @@ class SOComposite extends CompositeMultiLayer {
         this.description = [{
             type: "Index",
             name: firstId,
-            projection: (index) => {
-                return {
-                    'operators': index,
-                    'skills': index
-                };
+            generator: {
+                action: (index) => {
+                    return {
+                        'operators': index,
+                        'skills': index
+                    };
+                },
+                type: 'projection'
             }
             }, {
             type: "Index",
             name: secondId,
-            projection: (index) => {
-                return {
-                    'services': index,
-                    'skills': index
-                };
+            generator: {
+                action: (index) => {
+                    return {
+                        'services': index,
+                        'skills': index
+                    };
+                },
+                type: 'projection'
             }
             }];
 

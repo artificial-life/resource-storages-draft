@@ -1,5 +1,6 @@
 'use strict'
 
+var Generator = require('./Generator/Generator.js');
 
 class VolumeParameter {
     constructor({

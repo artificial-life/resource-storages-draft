@@ -22,6 +22,7 @@ class CompositeHub extends BasicHub {
     }
     project(params) {
         var result = {};
+
         _.forEach(params, (param, key) => {
             if (!this.projection.hasOwnProperty(key)) throw new Error('Can not project this');
 
@@ -30,7 +31,6 @@ class CompositeHub extends BasicHub {
                 if (!result[ingredient]) result[ingredient] = {};
                 result[ingredient][key] = projection;
             })
-
         });
 
         return result;
