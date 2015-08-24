@@ -3,45 +3,47 @@
 var _ = require('lodash');
 
 var BasicHub = require('./BasicHub.js');
+var Generator = require('./Parameters/Generator/Generator.js');
 
 class CompositeHub extends BasicHub {
     constructor(description) {
         super(description);
         this.composite = true;
     }
-    extractProjection(description) {
+    addParamsGenerator(description) {
         _.forEach(description, (param) => {
-            if (param.projection) this.setProjection(param.name, param.projection)
+            if (param.generator) this.addGenerator(param.name, param.generator)
         });
     }
     addParamsDescription(descriptions) {
         super.addParamsDescription(descriptions);
-        this.extractProjection(descriptions);
-
+        this.addParamsGenerator(descriptions);
         return this;
+    }
+    addGenerator(name, generator_data) {
+        this.generators = this.generators || {};
+        var type = generator_data.type;
+        var action = generator_data.action;
+
+        this.generators[name] = Generator.create(type, action);
+        this.generators[name].setParamName(name);
     }
     project(params) {
         var result = {};
 
         _.forEach(params, (param, key) => {
-            if (!this.projection.hasOwnProperty(key)) throw new Error('Can not project this');
+            if (!this.generator.hasOwnProperty(key)) throw new Error('Can not project this');
 
-            var fn = this.projection[key];
-            _.forEach(fn(param), (projection, ingredient) => {
+            var fn = this.generator[key].getAction();
+            var context = params;
+
+            _.forEach(fn(context), (projection, ingredient) => {
                 if (!result[ingredient]) result[ingredient] = {};
                 result[ingredient][key] = projection;
             })
         });
 
         return result;
-    }
-    setProjection(name, projection) {
-        this.projection = this.projection || {};
-
-        if (!this.hasParam(name)) throw new Error('Missing param ' + name);
-
-        this.projection[name] = projection;
-        return this;
     }
     setFormula(name, formula) {
         this.formula = this.formula || {};
@@ -50,13 +52,17 @@ class CompositeHub extends BasicHub {
         this.formula[name] = formula;
         return this;
     }
-    setContinuosDecorators(decorator) {
-        var param_name = this.Continuos()[0].getName();
-        var projection = decorator.projection;
-        var formula = decorator.formula;
+    setContinuosDecorators(decorators) {
+        var names = this.getNames('continuos');
 
-        this.setProjection(param_name, projection);
-        this.setFormula(param_name, formula);
+        _.forEach(decorators, (decorator, index) => {
+            var param_name = names[index];
+            var generator_data = decorator.generator;
+            var formula = decorator.formula;
+
+            this.addGenerator(param_name, generator_data);
+            this.setFormula(param_name, formula);
+        });
     }
     getFormula() {
         return this.formula;

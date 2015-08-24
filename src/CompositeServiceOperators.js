@@ -8,6 +8,7 @@ var Plan = require('./Plan.js');
 class SOComposite extends CompositeMultiLayer {
     constructor(firstId, secondId, parent) {
         super(parent);
+
         this.description = [{
             type: "Index",
             name: firstId,
@@ -34,19 +35,22 @@ class SOComposite extends CompositeMultiLayer {
             }
             }];
 
-        this.layer_decoration = {
-            projection: (time) => {
-                return {
-                    'operators': time,
-                    'services': time
-                };
+        this.layer_decoration = [{
+            generator: {
+                action: (time) => {
+                    return {
+                        'operators': time,
+                        'services': time
+                    };
+                },
+                type: 'projection'
             },
             formula: ([operator_volume, service_volume, skill]) => {
                 if (!operator_volume || !service_volume || !skill) return false;
 
                 return operator_volume.intersection(service_volume).intersection(skill);
             }
-        };
+        }];
 
         this.init_params = [].slice.apply(arguments);
     }

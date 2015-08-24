@@ -20,13 +20,14 @@ class IndexParameter extends DiscreteParameter {
         return IndexKey;
     }
     constructor(
-        name = 'defualt_index', default_values = {
+        name = 'default_index', default_values = {
             start: 0,
             end: Infinity
         }) {
         super({
             name, default_values
         });
+
     }
     makeKey(data) {
         return new IndexKey(data, this.getName());

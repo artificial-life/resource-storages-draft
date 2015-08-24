@@ -14,10 +14,10 @@ class MultiLayerVolume extends AbstractVolume {
         this.layers = {};
     }
     set description(discrete_params_description) {
-        super.description = discrete_params_description;
-
         var volume_params_description = this.LayerVolume.PrimitiveVolume.params_description;
-        this.getParams().addParamsDescription(volume_params_description);
+        var description = volume_params_description.concat(discrete_params_description);
+
+        super.description = description;
     }
     get LayerVolume() {
         throw new Error('MultiLayerVolume abstract property');

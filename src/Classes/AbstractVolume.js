@@ -8,7 +8,10 @@ class AbstractVolume {
         this.parent = parent || false;
     }
     set description(value) {
-        this.parameters = ParametersHub.create(value, true);
+        this.parameters = ParametersHub.create('basic', value);
+        this.attachQuery();
+    }
+    attachQuery() {
         this.query = Query.create(this.getParams());
     }
     get description() {

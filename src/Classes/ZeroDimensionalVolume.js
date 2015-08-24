@@ -33,7 +33,7 @@ class ZeroDimensional extends AbstractVolume {
     }
     build(data) {
         var primitive_volume = this.buildPrimitiveVolume(data);
-        this.extendPrimitive(primitive_volume, false);
+        this.extendPrimitive(primitive_volume);
     }
     observe() {
         var result = new ZeroDimensional(this);

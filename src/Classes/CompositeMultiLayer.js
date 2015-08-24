@@ -3,6 +3,7 @@
 var _ = require('lodash');
 
 var MultiLayerVolume = require('./MultiLayerVolume.js');
+var ParametersHub = require('./ParametersHub/ParametersHub.js');
 
 class CompositeMultiLayer extends MultiLayerVolume {
     constructor(parent) {
@@ -10,11 +11,11 @@ class CompositeMultiLayer extends MultiLayerVolume {
         this.ingredients = {};
     }
     set description(discrete_parameters_description) {
-        var param_description = {
-            description: discrete_parameters_description,
-            composite: true
-        };
-        super.description = param_description;
+        var volume_params_description = this.LayerVolume.PrimitiveVolume.params_description;
+        var description = volume_params_description.concat(discrete_parameters_description)
+
+        this.parameters = ParametersHub.create('composite', description);
+        this.attachQuery();
     }
     set layer_decoration(decoration) {
         this.getParams().setContinuosDecorators(decoration);

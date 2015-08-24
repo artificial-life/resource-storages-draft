@@ -15,9 +15,9 @@ var discover = function (name) {
 
 class Generator {
     constructor() {}
-    static create(type, data) {
+    static create(type, action) {
         var model = discover(type);
-        var generator = new model(data);
+        var generator = new model(action);
 
         return generator;
     }

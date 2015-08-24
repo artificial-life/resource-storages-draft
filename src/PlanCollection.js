@@ -15,7 +15,7 @@ class PlanCollection extends MultiLayerVolume {
         this.init_params = [].slice.apply(arguments);
     }
     get LayerVolume() {
-        return Plan
+        return Plan;
     }
     build(count) {
         var primitive_volumes_data = [{
