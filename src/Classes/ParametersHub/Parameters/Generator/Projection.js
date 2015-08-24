@@ -2,10 +2,11 @@
 
 var BasicGenerator = require('./BasicGenerator.js');
 
-class Projection {
-    gerAction() {
+class Projection extends BasicGenerator {
+    getAction() {
         var projection = (context) => {
-            return this.action(context[this.param]);
+            var param = context[this.param];
+            return this.action(param);
         }
         return projection;
     }

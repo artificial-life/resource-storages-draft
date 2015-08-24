@@ -26,19 +26,21 @@ class CompositeHub extends BasicHub {
         var action = generator_data.action;
 
         this.generators[name] = Generator.create(type, action);
+
         this.generators[name].setParamName(name);
     }
     project(params) {
         var result = {};
 
         _.forEach(params, (param, key) => {
-            if (!this.generator.hasOwnProperty(key)) throw new Error('Can not project this');
+            if (!this.generators.hasOwnProperty(key)) throw new Error('Can not project this');
 
-            var fn = this.generator[key].getAction();
-            var context = params;
+            var action = this.generators[key].getAction();
+            var projected = action(params);
 
-            _.forEach(fn(context), (projection, ingredient) => {
-                if (!result[ingredient]) result[ingredient] = {};
+            _.forEach(projected, (projection, ingredient) => {
+                result[ingredient] = result[ingredient] || {};
+
                 result[ingredient][key] = projection;
             })
         });

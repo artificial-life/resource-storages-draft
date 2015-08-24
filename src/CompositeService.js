@@ -1,6 +1,5 @@
 'use strict'
 var CompositeMultiLayer = require('./Classes/CompositeMultiLayer.js');
-var ProjectionDescription = require('./Classes/ProjectionDescription.js');
 var Plan = require('./Plan.js');
 
 //ingredients : CompositeSeviceOperator as office_schedule
