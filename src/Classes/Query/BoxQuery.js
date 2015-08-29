@@ -7,15 +7,17 @@ var CompositeQuery = require('./CompositeQuery.js');
 class BoxQuery extends CompositeQuery {
     constructor(box, params_hub) {
         super(params_hub);
-        this.box = box;
+        this.box = new box();
     }
     filter(ingredients, callback) {
         this.param_names = _.keys(this.filters);
         var continuos_filters = this.hub.project(this.continuos_filters);
-
+        var sizes = _.pluck(this.continuos_filters, 'size');
+        console.log(sizes);
+        this.box.setSizes(sizes);
         var formula = (parts) => {
             if (!parts) return false;
-            return this.box.makeFromSource(ingredients);
+            return this.box.makeFromSources(parts);
         };
 
         this.buildFilter(0, {}, (path) => {
@@ -32,7 +34,7 @@ class BoxQuery extends CompositeQuery {
             });
 
             var composite_volume = formula(volumes);
-
+            console.log(composite_volume);
             if (composite_volume) callback(path, composite_volume)
         });
     }

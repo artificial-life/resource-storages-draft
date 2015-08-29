@@ -11,6 +11,7 @@ var TimeSlotBox = require('./TimeSlot.js')
 class BoxedSlots extends BoxMultiLayer {
     constructor(firstId, secondId, parent) {
         super(parent);
+        this.box = TimeSlotBox;
 
         this.description = [{
             type: "Index",
@@ -36,7 +37,6 @@ class BoxedSlots extends BoxMultiLayer {
             }
             }];
 
-        this.box = TimeSlotBox;
 
         var shelf = new Shelf(this.box);
 

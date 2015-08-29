@@ -13,7 +13,7 @@ class BoxMultiLayer extends CompositeMultiLayer {
         //@TODO:rework it later
         this.query = new BoxQuery(this.box, this.getParams());
     }
-    observe(query_params) {
+    observe(params) {
         var result = this.emptyCopy();
 
         this.query.reset()

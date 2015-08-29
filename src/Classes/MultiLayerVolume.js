@@ -15,6 +15,7 @@ class MultiLayerVolume extends AbstractVolume {
     }
     set Volume(LayerVolume) {
         this.LayerVolume = LayerVolume;
+
         var volume_params_description = this.LayerVolume.getDescription();
 
         this.getParams().addParamsDescription(volume_params_description);

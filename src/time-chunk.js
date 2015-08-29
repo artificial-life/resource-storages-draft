@@ -55,6 +55,22 @@ class TimeChunk extends PrimitiveVolume {
 
         return new TimeChunk([[start, end]], state);
     }
+    getLength() {
+        return this.end - this.start;
+    }
+    split(size) {
+        var length = this.getLength();
+
+        if (size > length) return [];
+        var count = length / size | 0;
+        var result = [];
+
+        for (var i = 0; i < count; i += 1) {
+            result.push(new TimeChunk([[this.start + i * size, this.start + (i + 1) * size]]));
+        }
+
+        return result;
+    }
 }
 
 

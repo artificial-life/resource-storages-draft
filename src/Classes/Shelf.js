@@ -6,7 +6,7 @@ class Shelf extends BasicVolume {
     constructor(Box, parent) {
         super(parent);
 
-        this.description = Box.description;
+        this.description = Box.params_description;
         this.PrimitiveVolume = Box;
     }
     clone(parent) {

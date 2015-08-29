@@ -11,10 +11,7 @@ class Plan extends BasicVolume {
     constructor(parent) {
         super(parent);
 
-        this.description = [{
-            type: 'volume_definition',
-            name: 'time'
-        }];
+        this.description = TimeChunk.params_description;
 
         this.PrimitiveVolume = TimeChunk;
     }
@@ -109,6 +106,20 @@ class Plan extends BasicVolume {
         var ch = _.map(this.content, (chunk) => chunk.toJSON());
         var plan = new Plan(this);
         plan.build(ch);
+
+        return plan;
+    }
+    split(size) {
+        var result = [];
+        var plan = new Plan(this);
+
+        _.forEach(this.content, (chunk) => {
+            _.forEach(chunk.split(size), (item) => {
+                if (item) result.push(item)
+            });
+        });
+
+        plan.build(result);
 
         return plan;
     }

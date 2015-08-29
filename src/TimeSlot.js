@@ -7,11 +7,10 @@ class TimeSlot extends Box {
     constructor(init_data, parent = 'a') {
         super(init_data, parent);
 
-        this.parts = [TimeChunk];
+        this.parts = this.constructor.parts;
     }
-
-    set data(raw_data) {
-
+    static get parts() {
+        return [TimeChunk];
     }
 }
 

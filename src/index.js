@@ -62,11 +62,15 @@ var BoxedSlots = require('./BoxedSlotsVolume.js');
 
 var timeslots = new BoxedSlots('operator_id', 'service_id');
 
+timeslots.setIngredients({
+    socomposite: office_shcedule
+});
+
 var requests = timeslots.observe({
     'operator_id': 1,
     'service_id': 1,
     'time': {
         data: [0, 1000],
-        size: 100
+        size: 98
     }
 });
