@@ -2,55 +2,31 @@
 
 var Promise = require('bluebird');
 var _ = require('lodash');
+
 var TimeChunk = require('./time-chunk.js');
 var BasicVolume = require('./Classes/BasicVolume.js');
 var ZeroDimensional = require('./Classes/ZeroDimensionalVolume.js');
 
 class Plan extends BasicVolume {
-    static get PrimitiveVolume() {
-        return TimeChunk;
+    constructor(parent) {
+        super(parent);
+
+        this.description = [{
+            type: 'volume_definition',
+            name: 'time'
+        }];
+
+        this.PrimitiveVolume = TimeChunk;
     }
-    get PrimitiveVolume() {
-        return Plan.PrimitiveVolume;
+    clone(parent) {
+        return new Plan(parent);
     }
-    build(data) {
-        //build from state 
-        //build form primitive
-        if (data instanceof this.PrimitiveVolume) {
-            this.extend(data, false);
-            return this;
-        }
-
-        if (!_.isArray(data)) return this;
-        //build from array
-
-        _.forEach(data, (raw_data) => {
-            var primitive_volume = this.buildPrimitiveVolume(raw_data);
-            this.extend(primitive_volume, false);
-        });
-
-        return this;
-    }
-    extend(plan, sort = true) {
-        var ext = this.extractContent(plan);
-
-        _.forEach(ext, (primitive) => {
-            this.extendPrimitive(primitive);
-        });
-
-        if (sort) this.sort();
-
-        return this;
-
-    }
-
     sort() {
         this.content = _.sortBy(this.content, function (chunk) {
             return this.start;
         });
     }
     observe(params) {
-        //data has [start,end]
         return this.query.reset().addParams(params).filter(this);
     }
     reserve(params) {
@@ -61,9 +37,6 @@ class Plan extends BasicVolume {
             return chunk.toJSON();
         });
         return data;
-    }
-    _processResults(results) {
-        return _.flatten(results);
     }
     intersection(plan) {
         var other_content = [];
@@ -134,7 +107,10 @@ class Plan extends BasicVolume {
     }
     copy() {
         var ch = _.map(this.content, (chunk) => chunk.toJSON());
-        return new Plan(ch);
+        var plan = new Plan(this);
+        plan.build(ch);
+
+        return plan;
     }
 }
 

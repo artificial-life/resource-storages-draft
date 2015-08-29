@@ -27,7 +27,6 @@ class BasicHub {
         var global_name = description.name;
 
         var param = new model(global_name, default_values);
-
         return param;
     }
     addParam(param) {

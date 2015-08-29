@@ -1,22 +1,34 @@
 'use strict'
 
+var _ = require('lodash');
+
 var AbstractVolume = require('./AbstractVolume.js');
 var ZeroDimensional = require('./ZeroDimensionalVolume.js');
 
 class BasicVolume extends AbstractVolume {
     constructor(parent) {
         super(parent);
-        this.description = this.PrimitiveVolume.params_description;
         this.content = [];
     }
-    static get PrimitiveVolume() {
-        throw new Error('BasicVolume: Abstract static property call');
+    clone(parent = false) {
+        throw new Error('BasicVolume abstract method "clone"');
     }
-    get PrimitiveVolume() {
-        throw new Error('BasicVolume: Abstract property call');
+    getDescription() {
+        return this.getParams().getDescription();
     }
     buildPrimitiveVolume(item) {
         return item instanceof this.PrimitiveVolume ? item : new this.PrimitiveVolume(item.data, item.state);
+    }
+    extend(source, sort = true) {
+        var ext = this.extractContent(source);
+
+        _.forEach(ext, (primitive) => {
+            this.extendPrimitive(primitive);
+        });
+
+        if (sort) this.sort();
+
+        return this;
     }
     extendPrimitive(primitive) {
         this.content.push(primitive);
@@ -43,6 +55,25 @@ class BasicVolume extends AbstractVolume {
 
 
         return content;
+    }
+    build(data) {
+        //@TODO:build from state 
+        if (data instanceof this.PrimitiveVolume) {
+            this.extend(data, false);
+            return this;
+        }
+
+        if (_.isArray(data)) {
+            _.forEach(data, (raw_data) => {
+                var primitive_volume = this.buildPrimitiveVolume(raw_data);
+                this.extend(primitive_volume, false);
+            });
+        }
+
+        return this;
+    }
+    sort() {
+        throw new Error('Volume specific function');
     }
 }
 

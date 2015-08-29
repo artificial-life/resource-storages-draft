@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/artificial-life/resource-storages-draft#readme",
   "dependencies": {
+    "babel": "^5.8.21",
     "bluebird": "^2.9.34",
     "custom-queue": "git+https://github.com/artificial-life/custom-queue.git",
     "lodash": "^3.10.0",

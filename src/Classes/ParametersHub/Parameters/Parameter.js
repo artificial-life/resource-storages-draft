@@ -9,6 +9,7 @@ class VolumeParameter {
         this.is_discrete = discrete;
         this.global_name = name;
         this.default_values = default_values;
+        this.type = this.constructor.name.replace('Parameter', '');
     }
     isDiscrete() {
         return !!this.is_discrete;
@@ -24,6 +25,7 @@ class VolumeParameter {
     }
     getDescription() {
         return {
+            type: this.type,
             discrete: this.is_discrete,
             name: this.global_name,
             default_values: this.default_values

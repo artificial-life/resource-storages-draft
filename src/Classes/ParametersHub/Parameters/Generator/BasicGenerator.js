@@ -1,4 +1,4 @@
-'use sctrict'
+'use strict'
 
 
 class BasicGenerator {
@@ -10,6 +10,12 @@ class BasicGenerator {
     }
     getAction() {
         throw new Error("BasicGenerator abstract method 'getAction'");
+    }
+    getDescription() {
+        return {
+            type: this.constructor.name,
+            action: this.action
+        }
     }
 }
 

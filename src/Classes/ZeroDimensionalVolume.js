@@ -9,16 +9,17 @@ var PrimitiveVolume = require('./PrimitiveVolume.js');
 class ZeroDimensional extends AbstractVolume {
     constructor(parent) {
         super(parent);
-
-        this.description = PrimitiveVolume.params_description;
+        this.description = [];
         this.content = {};
     }
-    static get PrimitiveVolume() {
-
-        return PrimitiveVolume;
+    getDescription() {
+        return [];
     }
-    get PrimitiveVolume() {
-        return ZeroDimensional.PrimitiveVolume;
+    clone(parent) {
+        var cloned = new ZeroDimensional(parent);
+        cloned.build(this.content);
+
+        return cloned;
     }
     buildPrimitiveVolume(item) {
         return item instanceof PrimitiveVolume ? item : new PrimitiveVolume([], item.state);

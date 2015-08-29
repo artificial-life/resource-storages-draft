@@ -11,17 +11,13 @@ class CompositeMultiLayer extends MultiLayerVolume {
         this.ingredients = {};
     }
     set description(discrete_parameters_description) {
-        var volume_params_description = this.LayerVolume.PrimitiveVolume.params_description;
-        var description = volume_params_description.concat(discrete_parameters_description)
-
-        this.parameters = ParametersHub.create('composite', description);
+        this.parameters = ParametersHub.create('composite', discrete_parameters_description);
         this.attachQuery();
     }
-    set layer_decoration(decoration) {
-        this.getParams().setContinuosDecorators(decoration);
-    }
-    get LayerVolume() {
-        throw new Error('CompositeMultiLayer abstract method');
+    set Volume(data) {
+        super.Volume = data.Volume;
+        this.getParams().setContinuosDecorators(data.decoration);
+
     }
     setIngredients(ingredients) {
         this.ingredients = ingredients

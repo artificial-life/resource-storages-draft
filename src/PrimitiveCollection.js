@@ -15,10 +15,10 @@ class PrimitiveCollection extends MultiLayerVolume {
             type: "Index",
             name: secondIndexName
             }];
+
+        this.Volume = new ZeroDimensional();
+
         this.init_params = [].slice.apply(arguments);
-    }
-    get LayerVolume() {
-        return ZeroDimensional;
     }
     build(first_count, second_count) {
         //only test

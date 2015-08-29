@@ -13,14 +13,11 @@ class MultiLayerVolume extends AbstractVolume {
         super(parent);
         this.layers = {};
     }
-    set description(discrete_params_description) {
-        var volume_params_description = this.LayerVolume.PrimitiveVolume.params_description;
-        var description = volume_params_description.concat(discrete_params_description);
+    set Volume(LayerVolume) {
+        this.LayerVolume = LayerVolume;
+        var volume_params_description = this.LayerVolume.getDescription();
 
-        super.description = description;
-    }
-    get LayerVolume() {
-        throw new Error('MultiLayerVolume abstract property');
+        this.getParams().addParamsDescription(volume_params_description);
     }
     getContent(key) {
         if (!key) {
@@ -44,7 +41,9 @@ class MultiLayerVolume extends AbstractVolume {
         if (volume_data instanceof AbstractVolume) {
             volume = volume_data
         } else {
-            volume = new this.LayerVolume();
+            volume = this.LayerVolume.clone();
+            //console.log('CLONE', volume);
+            //volume.content = [];
             volume.build(volume_data);
         }
 

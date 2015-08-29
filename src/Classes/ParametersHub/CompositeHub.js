@@ -18,6 +18,7 @@ class CompositeHub extends BasicHub {
     addParamsDescription(descriptions) {
         super.addParamsDescription(descriptions);
         this.addParamsGenerator(descriptions);
+
         return this;
     }
     addGenerator(name, generator_data) {
@@ -71,31 +72,19 @@ class CompositeHub extends BasicHub {
     }
     getDescription(list) {
         if (list == 'discrete') {
-            return _.map(this.Discrete(), (param) => {
-
-                var result = param.getDescription();
-                result.projection = this.projection[result.name];
-
-                return result;
-            });
+            return _.map(this.Discrete(), (param) => this.getParamDescription(param));
         } else
         if (list == 'continuos') {
-            return _.map(this.Continuos(), (param) => {
-
-                var result = param.getDescription();
-                result.projection = this.projection[result.name];
-
-                return result;
-            });
+            return _.map(this.Continuos(), (param) => this.getParamDescription(param));
         } else {
-            return _.map(this.All(), (param) => {
-
-                var result = param.getDescription();
-                result.projection = this.projection[result.name];
-
-                return result;
-            });
+            return _.map(this.All(), (param) => this.getParamDescription(param));
         }
+    }
+    getParamDescription(param) {
+        var result = param.getDescription();
+        result.generator = this.generators[result.name].getDescription();
+
+        return result;
     }
 }
 

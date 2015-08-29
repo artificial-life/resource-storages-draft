@@ -35,28 +35,29 @@ class SOComposite extends CompositeMultiLayer {
             }
             }];
 
-        this.layer_decoration = [{
-            generator: {
-                action: (time) => {
-                    return {
-                        'operators': time,
-                        'services': time
-                    };
+        this.Volume = {
+            Volume: new Plan(),
+            decoration: [{
+                generator: {
+                    action: (time) => {
+                        return {
+                            'operators': time,
+                            'services': time
+                        };
+                    },
+                    type: 'projection'
                 },
-                type: 'projection'
-            },
-            formula: ([operator_volume, service_volume, skill]) => {
-                if (!operator_volume || !service_volume || !skill) return false;
+                formula: ([operator_volume, service_volume, skill]) => {
+                    if (!operator_volume || !service_volume || !skill) return false;
 
-                return operator_volume.intersection(service_volume).intersection(skill);
-            }
-        }];
+                    return operator_volume.intersection(service_volume).intersection(skill);
+                }
+            }]
+        };
 
         this.init_params = [].slice.apply(arguments);
     }
-    get LayerVolume() {
-        return Plan;
-    }
+
 
 }
 

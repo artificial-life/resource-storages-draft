@@ -1,5 +1,5 @@
 'use strict'
-
+require("babel/polyfill");
 var _ = require('lodash');
 
 var PlanCollection = require('./PlanCollection.js');
@@ -57,3 +57,16 @@ var ob_comp = office_shcedule.observe({
 });
 
 console.log(ob_comp.getContent('2|2').getContent().getContent());
+
+var BoxedSlots = require('./BoxedSlotsVolume.js');
+
+var timeslots = new BoxedSlots('operator_id', 'service_id');
+
+var requests = timeslots.observe({
+    'operator_id': 1,
+    'service_id': 1,
+    'time': {
+        data: [0, 1000],
+        size: 100
+    }
+});

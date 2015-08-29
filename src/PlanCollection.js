@@ -12,10 +12,10 @@ class PlanCollection extends MultiLayerVolume {
             type: "Index",
             name: indexGlobalName
             }];
+
+        this.Volume = new Plan();
+
         this.init_params = [].slice.apply(arguments);
-    }
-    get LayerVolume() {
-        return Plan;
     }
     build(count) {
         var primitive_volumes_data = [{
