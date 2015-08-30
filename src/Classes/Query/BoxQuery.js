@@ -9,34 +9,13 @@ class BoxQuery extends CompositeQuery {
         super(params_hub);
         this.box = new box();
     }
-    filter(ingredients, callback) {
-        this.param_names = _.keys(this.filters);
-        var continuos_filters = this.hub.project(this.continuos_filters);
+    getFormula() {
         var sizes = _.pluck(this.continuos_filters, 'size');
-        console.log(sizes);
         this.box.setSizes(sizes);
-        var formula = (parts) => {
+        return (parts) => {
             if (!parts) return false;
             return this.box.makeFromSources(parts);
         };
-
-        this.buildFilter(0, {}, (path) => {
-
-            var discrete_params = this.hub.project(path);
-            var filters = _.merge(continuos_filters, discrete_params);
-
-            var volumes = _.map(ingredients, (ingredient, name) => {
-
-                var extracted = ingredient.observe(filters[name]);
-                var first_key = _.first(_.keys(extracted.getContent()));
-
-                return extracted.getLayerVolume(first_key);
-            });
-
-            var composite_volume = formula(volumes);
-            console.log(composite_volume);
-            if (composite_volume) callback(path, composite_volume)
-        });
     }
 }
 

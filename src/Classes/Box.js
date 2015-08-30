@@ -42,23 +42,20 @@ class Box extends PrimitiveVolume {
 
         return sizes_defined && !volumes_defined;
     }
-    generateId() {
-        return Math.random();
-    }
     compose(parts) {
         var min = _.min(_.map(parts, (part) => part.getContent().length));
-        var box_map = {};
+        var box_pack = [];
 
         for (var i = 0; i < min; i += 1) {
-            var id = this.generateId();
+
             var init_data = _.map(parts, (part) => {
                 return part.getContent()[i];
             });
 
-            box_map[id] = new this.constructor(init_data);
+            box_pack.push(new this.constructor(init_data));
         }
 
-        return box_map;
+        return box_pack;
     }
     makeFromSources(sources) {
         if (!this.isForm()) throw new Error('Sizes and Parts should be defined');

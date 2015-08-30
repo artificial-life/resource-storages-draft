@@ -13,17 +13,6 @@ class BoxMultiLayer extends CompositeMultiLayer {
         //@TODO:rework it later
         this.query = new BoxQuery(this.box, this.getParams());
     }
-    observe(params) {
-        var result = this.emptyCopy();
-
-        this.query.reset()
-            .addParams(params).filter(this.ingredients, (key, composed) => {
-                var layer = this.buildLayer(key, composed);
-                result.extend(layer);
-            });
-
-        return result;
-    }
 }
 
 module.exports = BoxMultiLayer;

@@ -1,6 +1,9 @@
 'use strict'
 
+var _ = require('lodash');
+
 var BasicVolume = require('./BasicVolume.js');
+var uuid = require('node-uuid');
 
 class Shelf extends BasicVolume {
     constructor(Box, parent) {
@@ -8,19 +11,26 @@ class Shelf extends BasicVolume {
 
         this.description = Box.params_description;
         this.PrimitiveVolume = Box;
+        this.content = {};
+    }
+    extendPrimitive(primitive) {
+        var id = uuid.v1();
+        this.content[id] = primitive;
+
+        return this;
     }
     clone(parent) {
         return new Shelf(this.PrimitiveVolume, parent);
     }
-    observe() {
-
+    observe(params) {
+        throw new Error('Should write it later');
     }
     sort() {
-        this.content = _.sortBy(this.content, function (chunk) {
-            return this.start;
-        });
+        //Wanna sort a map
+        //okay
+        //go on 
+        return this;
     }
-
     reserve(params) {
 
     }
@@ -38,7 +48,7 @@ class Shelf extends BasicVolume {
         throw new Error('Method unavailable');
     }
     copy() {
-        var ch = _.map(this.content, (chunk) => chunk.toJSON());
+        var ch = _.map(this.content, (chunk) => chunk);
         var shelf = new Shelf(this);
         shelf.build(ch);
 

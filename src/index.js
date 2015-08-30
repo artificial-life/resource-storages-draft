@@ -71,6 +71,8 @@ var requests = timeslots.observe({
     'service_id': 1,
     'time': {
         data: [0, 1000],
-        size: 98
+        size: 104
     }
 });
+
+console.log(requests.getLayerVolume('1|1'));

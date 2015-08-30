@@ -5,18 +5,20 @@ var _ = require('lodash');
 var LayerQuery = require('./LayerQuery.js');
 
 class CompositeQuery extends LayerQuery {
-    filter(ingredients, callback) {
-        this.param_names = _.keys(this.filters);
-        var continuos_filters = this.hub.project(this.continuos_filters);
+    getFormula(ingredients) {
         //@TODO: this should be reworked in future if we would have multiple basic volumes in layers
         var names = [];
         _.forEach(ingredients, (ingredient) => {
             names = _.union(names, ingredient.getParams().getNames('continuos'));
         });
         var formula_name = names[0];
-        /*=====================*/
 
-        var formula = this.hub.getFormula()[formula_name];
+        return this.hub.getFormula()[formula_name];
+    }
+    filter(ingredients, callback) {
+        this.param_names = _.keys(this.filters);
+        var continuos_filters = this.hub.project(this.continuos_filters);
+        var formula = this.getFormula(ingredients);
 
         this.buildFilter(0, {}, (path) => {
 
