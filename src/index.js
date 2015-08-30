@@ -1,5 +1,5 @@
 'use strict'
-require("babel/polyfill");
+
 var _ = require('lodash');
 
 var PlanCollection = require('./PlanCollection.js');
@@ -71,8 +71,8 @@ var requests = timeslots.observe({
     'service_id': 1,
     'time': {
         data: [0, 1000],
-        size: 104
+        size: 101
     }
 });
 
-console.log(requests.getLayerVolume('1|1'));
+_.forEach(requests.getLayerVolume('1|1').getContent(), (c) => console.log(c.content));

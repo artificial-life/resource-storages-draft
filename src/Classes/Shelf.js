@@ -19,6 +19,14 @@ class Shelf extends BasicVolume {
 
         return this;
     }
+    getFormula() {
+        var box = new this.PrimitiveVolume();
+
+        return (parts) => {
+            if (!parts) return false;
+            return box.makeFromSources(parts);
+        };
+    }
     clone(parent) {
         return new Shelf(this.PrimitiveVolume, parent);
     }

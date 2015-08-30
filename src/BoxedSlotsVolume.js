@@ -1,6 +1,6 @@
 'use strict'
 
-var BoxMultiLayer = require('./Classes/BoxMultiLayer.js');
+var CompositeMultiLayer = require('./Classes/CompositeMultiLayer.js');
 var Shelf = require('./Classes/Shelf.js');
 var TimeSlotBox = require('./TimeSlot.js')
 
@@ -8,7 +8,7 @@ var TimeSlotBox = require('./TimeSlot.js')
 //goal: packaging into timeslot
 //formula: find box parts
 
-class BoxedSlots extends BoxMultiLayer {
+class BoxedSlots extends CompositeMultiLayer {
     constructor(firstId, secondId, parent) {
         super(parent);
         this.box = TimeSlotBox;
@@ -39,6 +39,7 @@ class BoxedSlots extends BoxMultiLayer {
 
 
         var shelf = new Shelf(this.box);
+        var formula = shelf.getFormula();
 
         this.Volume = {
             Volume: shelf,
@@ -50,7 +51,8 @@ class BoxedSlots extends BoxMultiLayer {
                             };
                         },
                         type: 'projection'
-                    }
+                    },
+                    formula: formula
                 }
             ]
         };

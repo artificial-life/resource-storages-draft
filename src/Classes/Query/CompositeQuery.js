@@ -7,6 +7,7 @@ var LayerQuery = require('./LayerQuery.js');
 class CompositeQuery extends LayerQuery {
     getFormula(ingredients) {
         //@TODO: this should be reworked in future if we would have multiple basic volumes in layers
+        //@TODO: also this is ugly
         var names = [];
         _.forEach(ingredients, (ingredient) => {
             names = _.union(names, ingredient.getParams().getNames('continuos'));

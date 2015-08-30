@@ -18,10 +18,18 @@ class VolumeQuery extends BasicQuery {
     }
     filter(volume) {
         var Primitive = volume.PrimitiveVolume;
-        var descriptions = Primitive.params_description;
         var search_volume = new Primitive(this.filters);
 
-        return volume.intersection(search_volume);
+        //@TODO: rework it later
+        //@TODO: also, this is ugly
+        var name = Primitive.params_description[0].name;
+        var size = this.filters[name].size || false;
+
+        var result = volume.intersection(search_volume)
+
+        if (size) result = result.split(size);
+
+        return result;
     }
 }
 

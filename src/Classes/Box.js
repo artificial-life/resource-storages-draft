@@ -60,13 +60,7 @@ class Box extends PrimitiveVolume {
     makeFromSources(sources) {
         if (!this.isForm()) throw new Error('Sizes and Parts should be defined');
 
-        var parts = _.map(sources, (source, index) => {
-            var size = this.sizes[index];
-            var splited = source.split(size);
-            return splited;
-        });
-
-        var boxes = this.compose(parts);
+        var boxes = this.compose(sources);
 
         return boxes;
     }
