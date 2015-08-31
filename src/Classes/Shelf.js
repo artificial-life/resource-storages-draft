@@ -24,7 +24,7 @@ class Shelf extends BasicVolume {
 
         return (parts) => {
             if (!parts) return false;
-            return box.makeFromSources(parts);
+            return box.compose(parts);
         };
     }
     clone(parent) {

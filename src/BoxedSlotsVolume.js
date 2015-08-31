@@ -1,17 +1,16 @@
 'use strict'
 
-var CompositeMultiLayer = require('./Classes/CompositeMultiLayer.js');
-var Shelf = require('./Classes/Shelf.js');
+var BoxMultiLayer = require('./Classes/BoxMultiLayer.js');
+
 var TimeSlotBox = require('./TimeSlot.js')
 
 //ingredients : SeviceOperatorComposite as office_schedule
 //goal: packaging into timeslot
 //formula: find box parts
 
-class BoxedSlots extends CompositeMultiLayer {
+class BoxedSlots extends BoxMultiLayer {
     constructor(firstId, secondId, parent) {
         super(parent);
-        this.box = TimeSlotBox;
 
         this.description = [{
             type: "Index",
@@ -37,12 +36,8 @@ class BoxedSlots extends CompositeMultiLayer {
             }
             }];
 
-
-        var shelf = new Shelf(this.box);
-        var formula = shelf.getFormula();
-
         this.Volume = {
-            Volume: shelf,
+            box: TimeSlotBox,
             decoration: [{
                     generator: {
                         action: (time) => {
@@ -51,8 +46,7 @@ class BoxedSlots extends CompositeMultiLayer {
                             };
                         },
                         type: 'projection'
-                    },
-                    formula: formula
+                    }
                 }
             ]
         };

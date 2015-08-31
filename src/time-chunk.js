@@ -52,7 +52,6 @@ class TimeChunk extends PrimitiveVolume {
 
         if (start >= end || state.isNotAvailable()) return false;
 
-
         return new TimeChunk([[start, end]], state);
     }
     getLength() {
@@ -62,6 +61,7 @@ class TimeChunk extends PrimitiveVolume {
         var length = this.getLength();
 
         if (size > length) return [];
+
         var count = length / size | 0;
         var result = [];
 
