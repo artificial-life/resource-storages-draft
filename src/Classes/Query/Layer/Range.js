@@ -9,9 +9,14 @@ class Range {
         if (_.isNumber(data)) this.buildFromArray([data]);
         if (_.isArray(data)) this.buildFromArray(data);
         if (_.isObject(data)) this.buildFromObject(data);
+        if (_.isBoolean(data)) this.buildFromBoolean(data);
     }
     buildFromArray(array) {
         this.array = array;
+        return this;
+    }
+    buildFromBoolean(array) {
+        this.array = [false];
         return this;
     }
     buildFromObject(object) {
@@ -24,7 +29,7 @@ class Range {
         return this;
     }
     inRange(n) {
-        return this.array ? this.array.indexOf(n) !== -1 : _.inRange(n, this.start, this.end);
+        return this.array ? !!~this.array.indexOf(n) : _.inRange(n, this.start, this.end);
     }
 
     [Symbol.iterator]() {

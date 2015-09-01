@@ -7,13 +7,13 @@ class BasicQuery {
         this.defaults = {};
         this.hub = hub;
         this.watched = this.getListParamsNames(watched);
-        this.reset();
     }
     setDefault(params) {
         this.defaults = params;
     }
     reset() {
         this.filters = _.clone(this.defaults, true);
+
         return this;
     }
     getContinuosParamsNames() {
@@ -26,7 +26,7 @@ class BasicQuery {
         var names = this.hub.getNames(list);
 
         return _.transform(this.filters, (result, value, key) => {
-            if (names.indexOf(key) !== -1) result[key] = value;
+            if (~names.indexOf(key)) result[key] = value;
         });
     }
     addParams(params) {

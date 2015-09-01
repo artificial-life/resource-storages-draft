@@ -11,6 +11,8 @@ var operatorCollection = new PlanCollection('operator_id');
 var serviceCollection = new PlanCollection('service_id');
 var SkillsCollection = new PrimitiveCollection('operator_id', 'service_id');
 
+
+console.log('/=============Simple composition=============/');
 var office_shcedule = new Composite('operator_id', 'service_id');
 //var reduce = new Reduce('operator_id');
 
@@ -38,26 +40,21 @@ SkillsCollection.build(5, 3);
 //});
 
 var ob_skills = SkillsCollection.observe({
-    'operator_id': {
-        start: 0,
-        end: 10
-    },
-    'service_id': 2
+    'operator_id': 1,
+    'service_id': 1
 });
 
 var ob_comp = office_shcedule.observe({
-    'operator_id': {
-        start: 0,
-        end: 4
-    },
-    'service_id': 2,
+    'operator_id': 1,
+    'service_id': 1,
     'time': {
-        data: [150, 300]
+        data: [0, 400]
     }
 });
 
-console.log(ob_comp.getContent('2|2').getContent().getContent());
+console.log('1|1', ob_comp.getContent('1|1').getContent().getContent());
 
+console.log('/=============Boxing=============/');
 var BoxedSlots = require('./BoxedSlotsVolume.js');
 
 var timeslots = new BoxedSlots('operator_id', 'service_id');
@@ -75,4 +72,24 @@ var requests = timeslots.observe({
     }
 });
 
-_.forEach(requests.getLayerVolume('1|1').getContent(), (c) => console.log(c.content));
+_.forEach(requests.getLayerVolume('1|1').getContent(), (c, key) => {
+    console.log(c.content)
+});
+//console.log(requests.getLayerVolume('1|1'));
+console.log('/=============Fn Reduction=============/');
+var diagReducedOperators = require('./CompositeServiceOperatorReduction.js');
+var daigReduction = new diagReducedOperators('operator_id', 'service_id');
+
+daigReduction.setIngredients({
+    socomposite: office_shcedule
+});
+
+var diag = daigReduction.observe({
+
+    'service_id': 1,
+    'time': {
+        data: [50, 300]
+    }
+});
+
+console.log(diag.getLayerVolume('1'));

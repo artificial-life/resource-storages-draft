@@ -1,6 +1,7 @@
 'use strict'
 
 var _ = require('lodash');
+var Reduction = require('./Reduction.js');
 
 var stored_types = {};
 
@@ -20,6 +21,9 @@ class Generator {
         var generator = new model(action);
 
         return generator;
+    }
+    static isReduction(generator) {
+        return generator instanceof Reduction;
     }
 }
 

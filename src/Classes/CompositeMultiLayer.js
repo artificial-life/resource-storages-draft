@@ -28,6 +28,7 @@ class CompositeMultiLayer extends MultiLayerVolume {
         this.query.reset()
             .addParams(params).filter(this.ingredients, (key, composed) => {
                 var layer = this.buildLayer(key, composed);
+
                 result.extend(layer);
             });
 

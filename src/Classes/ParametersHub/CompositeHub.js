@@ -30,6 +30,28 @@ class CompositeHub extends BasicHub {
 
         this.generators[name].setParamName(name);
     }
+
+    makeKey(data_array) {
+        var result = [];
+
+        _.forEach(this.Discrete(), (param, index) => {
+            var name = param.getName();
+            var gen = this.generators[name];
+            var key = null;
+
+            if (_.isArray(data_array)) {
+                key = data_array[index]
+            } else
+            if (_.isObject(data_array)) {
+                key = data_array[name]
+            }
+
+            if (!Generator.isReduction(gen))
+                result.push(param.makeKey(key));
+        });
+
+        return result;
+    }
     project(params) {
         var result = {};
 

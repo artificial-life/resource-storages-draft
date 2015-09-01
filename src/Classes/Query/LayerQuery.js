@@ -1,7 +1,7 @@
 'use strict'
 
 var _ = require('lodash');
-var Range = require('./Range.js');
+var Range = require('./Layer/Range.js');
 var BasicQuery = require('./BasicQuery.js');
 
 class LayerQuery extends BasicQuery {
@@ -11,11 +11,12 @@ class LayerQuery extends BasicQuery {
     }
     reset() {
         this.continuos_filters = {};
+
+
         return super.reset();
     }
     addParam(key, value) {
         var description = this.hub.getParamByName(key);
-
         if (!description) return this;
 
         if (description.isDiscrete()) {
