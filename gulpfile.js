@@ -1,98 +1,81 @@
-var gulp = require("gulp");
-var sourcemaps = require("gulp-sourcemaps");
-var babel = require("gulp-babel");
-var concat = require("gulp-concat");
-var watch = require('gulp-watch');
-var server = require('gulp-develop-server');
-var livereload = require('gulp-livereload');
-var changed = require('gulp-changed');
-var nodemon = require('gulp-nodemon');
+'use strict'
 
-require('harmonize')();
-
-var options = {
-    path: './build/draft.js',
-    execArgv: ['--harmony']
-};
+let gulp = require("gulp");
+let sourcemaps = require("gulp-sourcemaps");
+let babel = require("gulp-babel");
+let watch = require('gulp-watch');
+let changed = require('gulp-changed');
+let nodemon = require('gulp-nodemon');
+let plumber = require('gulp-plumber');
+let mocha = require('gulp-mocha');
+let path = require('path');
+let demon;
 
 
-gulp.task('server:start', ['es6'], function () {
-    server.listen(options, livereload.listen);
+gulp.task("default", ['es6']);
+
+gulp.task("sourcemaps", function () {
+	return gulp.src("src/**/*.js")
+		.pipe(sourcemaps.init())
+		.pipe(babel())
+		.pipe(sourcemaps.write("./maps"))
+		.pipe(gulp.dest("build"));
 });
 
-gulp.task("draft", function () {
-    return gulp.src("src/draft.js")
-        .pipe(babel({
-            blacklist: ['bluebirdCoroutines', 'regenerator']
-        }))
-        .pipe(gulp.dest("build")).on('end', function () {
-            require('./build/draft.js');
-            setTimeout(function () {
-                console.log('timeout');
-                process.exit()
-            }, 30000);
-        });
+gulp.task("es6-js", function () {
+	return gulp.src(["src/**/*.js", "test/**/*.js"])
+		.pipe(changed("build"))
+		.pipe(plumber({
+			errorHandler: function (e) {
+				console.log('error', e);
+			}
+		}))
+		.pipe(babel())
+		.pipe(gulp.dest("build"))
+		.on('end', function () {
+			console.log('end build');
+		});
 });
 
-
-gulp.task("default", function () {
-    return gulp.src("src/**/*.js")
-        .pipe(babel({
-            blacklist: ['bluebirdCoroutines', 'regenerator']
-        }))
-        .pipe(gulp.dest("build")).on('end', function () {
-            require('./build/index.js');
-            setTimeout(function () {
-                console.log('timeout');
-                process.exit()
-            }, 30000);
-        });
+gulp.task("json", function () {
+	return gulp.src(["src/**/*.json"])
+		.pipe(gulp.dest("build"));
 });
 
-gulp.task('es6', function () {
-    return gulp.src("src/**/*.js")
-        .pipe(babel({
-            blacklist: ['bluebirdCoroutines', 'regenerator']
-        }))
-        .pipe(gulp.dest("build"));
+gulp.task('es6', ['es6-js', 'json']);
+
+
+
+gulp.task('test', ['es6', 'start-test'], function () {
+	gulp.watch(["src/**/*.js", "test/**/*.js"], ['es6']);
 });
 
-
-
-gulp.task("sm", function () {
-    return gulp.src("src/**/*.js")
-        .pipe(sourcemaps.init())
-        .pipe(babel({
-            blacklist: ['bluebirdCoroutines', 'regenerator']
-        }))
-        .pipe(sourcemaps.write("./maps"))
-        .pipe(gulp.dest("build"));
+gulp.task('serve', ['start-serve'], function () {
+	gulp.watch(["src/**/*.js", "test/**/*.js"], ['es6']);
 });
 
-gulp.task('serve', ['start'], function () {
-
-    gulp.watch('src/**/*.js', ['es6-ll']);
+gulp.task('start-test', function () {
+	demon = nodemon({
+		script: 'build/run.js',
+		watch: ['build/'],
+		execMap: {
+			"js": "node  --harmony --harmony_proxies"
+		},
+		env: {
+			'NODE_ENV': 'development'
+		}
+	});
 });
 
-gulp.task('es6-ll', function () {
-    return gulp.src("src/**/*.js")
-        .pipe(changed("build"))
-        .pipe(babel({
-            blacklist: ['bluebirdCoroutines', 'regenerator']
-        }))
-        .pipe(gulp.dest("build"))
-        .on('end', function () {
-            //server.restart();
-            console.log('build');
-        });
+gulp.task('start-serve', function () {
+	demon = nodemon({
+		script: 'build/index.sample.js',
+		watch: ['build/'],
+		execMap: {
+			"js": "node  --harmony --harmony_proxies"
+		},
+		env: {
+			'NODE_ENV': 'development'
+		}
+	});
 });
-
-gulp.task('start', function () {
-    nodemon({
-        script: 'build/index.js',
-        ext: 'js',
-        env: {
-            'NODE_ENV': 'development'
-        }
-    })
-})
