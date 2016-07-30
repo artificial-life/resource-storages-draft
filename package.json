@@ -28,6 +28,7 @@
     "node-uuid": "^1.4.3"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "gulp": "^3.8.11",
     "gulp-babel": "^5.1.0",
     "gulp-changed": "^1.2.1",
@@ -35,7 +36,8 @@
     "gulp-develop-server": "^0.4.3",
     "gulp-livereload": "^3.8.0",
     "gulp-mocha": "^2.2.0",
-    "gulp-nodemon": "^2.0.3",
+    "gulp-nodemon": "^2.1.0",
+    "gulp-plumber": "^1.1.0",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-watch": "^4.2.4",
     "harmonize": "^1.4.2"

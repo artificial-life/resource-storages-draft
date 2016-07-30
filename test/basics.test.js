@@ -41,13 +41,13 @@ describe("Storage", () => {
 				plan1.extend(data1);
 				plan2.extend(data2);
 
-				layer.addAttribute('main', plan);
-				layer.addAttribute('at1', plan);
-				layer.addAttribute('at2', plan);
+				layer.addAttribute('main', plan_main);
+				layer.addAttribute('at1', plan1);
+				layer.addAttribute('at2', plan2);
 
 				let result = layer.place({
-					main: [0, 10],
-					at1: [0, 10]
+					on: ['main','at1'],
+					value: 10
 				});
 			});
 		});

@@ -30,7 +30,7 @@ gulp.task("es6-js", function () {
 				console.log('error', e);
 			}
 		}))
-		.pipe(babel())
+		// .pipe(babel())
 		.pipe(gulp.dest("build"))
 		.on('end', function () {
 			console.log('end build');
