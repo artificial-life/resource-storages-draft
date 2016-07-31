@@ -4,73 +4,89 @@ var Promise = require('bluebird');
 var _ = require('lodash');
 
 class Plan {
-    constructor() {
-        this.content = [];
-        this.stored = [];
+    constructor(data) {
+        this.content = data.slice();
     }
-    extend(data) {
-        this.content = data;
+    searchPos(value, is_start) {
+        return {
+            is_equal: Boolean,
+            index: Number
+        }
     }
-    clone() {
-        let p = new Plan();
-        p.extend(_.clone(this.content));
-        return p;
-    }
-    place(item) {
-        let target = _.find(this.content, chunk => this.contains(chunk, item));
+    pull(start, end) {
+        let start_index = this.searchPos(start, true); //position to insert
+        let end_index = this.searchPos(end);
+        if (start_index.is_equal) // insert or delete
+            if (end_index.is_equal) // insert or delete
 
-        if (!target) return false;
-
-        let result = this.split(target, item);
-        _.remove(this.content, target);
-        this.content = this.content.concat( this.result);
-        this.stored.push(item);
-
-        return true;
+                return this;
     }
-    contains(chunk, item) {
-        return chunk[0] <= item[0] && chunk[1] >= item[1];
-    }
-    split(chunk, item) {
-        let first = chunk[0] == item[0] ? false : [chunk[0], item[0]];
-        let last = chunk[1] == item[1] ? false : [item[1], chunk[1]];
+    intersection(plan) {
+        let c1 = this.content;
+        let c2 = plan.content;
+
+        let plead = 0;
+        let ploose = 0;
+
+        let leader = c1[0] < c2[0] ? c1 : c2;
+        let looser = c1[0] >= c2[0] ? c1 : c2;
         let result = [];
-        if (first) result.push(first);
-        if (last) result.push(last);
+        let last = _.min([c1[c1.length - 1],c2[c2.length - 1]]);
+        let next=true;
+
+        while (next) {
+            let s1 = leader[plead * 2];
+            let e1 = leader[plead * 2 + 1];
+            let s2 = looser[ploose * 2];
+            let e2 = looser[ploose * 2 + 1];
+
+            if (e1 >= last && e2 >= last) next = false;
+
+            if (s2 < e1) {
+                result.push(s2);
+            } else {
+              plead ++;
+              s1 = leader[plead * 2];
+
+              if (s1 >= s2){
+                let sw = looser;
+                looser = leader;
+                leader = sw;
+
+                let swp = ploose;
+                ploose = plead;
+                plead = swp;
+              }
+              continue;
+            }
+
+
+            if (e2 > e1) {
+                result.push(e1);
+                let sw = looser;
+                looser = leader;
+                leader = sw;
+
+                let swp = ploose;
+                ploose = plead;
+                plead = swp;
+                ploose++;
+                continue;
+            }
+
+            if (e2 <= e1) {
+                result.push(e2);
+
+                ploose++;
+
+                continue;
+            }
+
+        }
 
         return result;
     }
-    chunkIntersection(first, second) {
-        var start = _.max([first[0], second[0]]);
-        var end = _.min([first[1], second[1]]);
 
-        if (start >= end) return false;
-
-        return [start, end];
-    }
-    intersection(plan) {
-        let first = this.content;
-        let second = plan.content;
-        let content = [];
-
-        _.forEach(first, fc => {
-            _.forEach(second, sc => {
-                let int = this.chunkIntersection(fc, sc);
-
-                int && content.push(int);
-            })
-        });
-
-        let p = new Plan();
-        p.extend(content);
-
-        return p;
-    }
-    width(value) {
-        let target = _.find(this.content, chunk => (chunk[1] - chunk[0] >= value));
-
-        return !!target ? [target[0], target[0] + value] : false;
-    }
 }
 
 module.exports = Plan;
