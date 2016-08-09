@@ -11,5 +11,5 @@ gulp.src('build/**/*.test.js', {
 		read: false
 	})
 	.pipe(mocha({
-		timeout: 5000
+		timeout: 15000
 	}));

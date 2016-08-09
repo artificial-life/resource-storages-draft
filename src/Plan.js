@@ -31,16 +31,17 @@ class Plan {
         }
     }
     pull(start, end) {
+      global.x = global.x ? global.x +1 :1;
         let pos = this.searchPos(start, end); //position to insert
         if (pos.is_equal_start && pos.is_equal_end) {
             this.content.splice(pos.index, 2);
         } else
         if (pos.is_equal_start && !pos.is_equal_end) {
-            this.content.splice(pos.index, 1, end);
+            this.content[pos.index]= end;
         } else
 
         if (!pos.is_equal_start && pos.is_equal_end) {
-            this.content.splice(pos.index + 1, 1, start);
+            this.content[pos.index + 1] = start;
         } else
 
         if (!pos.is_equal_start && !pos.is_equal_end) {
@@ -50,6 +51,7 @@ class Plan {
         return this;
     }
     intersection(plan) {
+      global._intersection = global._intersection ? global._intersection+1:1;
         let c1 = this.content;
         let c2 = plan.content;
 
@@ -58,6 +60,7 @@ class Plan {
 
         let leader = c1[0] < c2[0] ? c1 : c2;
         let looser = c1[0] >= c2[0] ? c1 : c2;
+        
         let result = [];
         let last = _.min([c1[c1.length - 1], c2[c2.length - 1]]);
         let next = true;
