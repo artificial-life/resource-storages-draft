@@ -27,8 +27,8 @@ describe.only("PERF", () => {
   describe(`oper ${oper_count} service ${service_count} `, () => {
     _.forEach([25, 50, 100, 200], count => {
       it("x" + count, () => {
-        global.x = 0;
-        global._intersection = 0;
+        // global.x = 0;
+        // global._intersection = 0;
         let services = ['s1', 's2', 's3', 's4'];
 
         for (var i = 0; i < count; i++) {
@@ -38,12 +38,12 @@ describe.only("PERF", () => {
           }]
           let result = tested.place(query);
         }
-        console.log('put per sec', global.x / (tested.last_time / 1e9 + tested.snap_time / 1e9));
-        console.log('opc', global.x);
-        console.log('int', global._intersection);
-        console.log('query  :', tested.last_time / 1e9);
-        console.log('snap  :', tested.snap_time / 1e9);
-        console.log(tested.snap.landscape.oper0.main);
+        // console.log('put per sec', global.x / (tested.last_time / 1e9 + tested.snap_time / 1e9));
+        // console.log('opc', global.x);
+        // console.log('int', global._intersection);
+        // console.log('query  :', tested.last_time / 1e9);
+        // console.log('snap  :', tested.snap_time / 1e9);
+        // console.log(tested.snap.landscape.oper0.main);
       });
     });
 
