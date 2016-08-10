@@ -30,28 +30,71 @@ class Snapshot {
     let length = query[2].length;
 
     let result = _.reduce(this.landscape, (min, oper, index) => {
-      let int = _.reduce(fields, (acc, field) => {
-        let x = oper[field];
-        return acc ? acc.intersection(x) : x;
-      }, false);
-      int = int.findSpace(length)
-      return min && min.value[0] <= int[0] ? min : {
-        value: int,
-        index: index
-      };
-    }, false);
+      let pos = this.findIn(oper, fields, length);
+
+      if (min.value > pos) {
+        min.value = pos;
+        min.index = index;
+      }
+
+      return min;
+    }, {
+      value: 100000,
+      index: -1
+    });
 
     result.fields = fields;
+    result.length = length;
+    return result;
+  }
+  findIn(places, fields, length) {
+    let result = _.reduce(fields, (min, field) => {
+      let place = places[field].content;
+      let i;
+      let pos = false;
+
+      for (i = 0; i < place.length / 2; i++) {
+        let point = place[i * 2];
+
+        let tested = this.testPoint(places, fields, point, length);
+        if (tested) {
+          pos = point;
+          break;
+        }
+      }
+
+      return min <= pos ? min : pos;
+    }, 1000000);
+
+    return result;
+  }
+  testPoint(places, fields, point, length) {
+    let result = true;
+    _.forEach(fields, field => result = this.chunkInPlace(places[field].content, point, length));
+    return result;
+  }
+  chunkInPlace(place, start_point, length) {
+    let result = false;
+    let end_point = start_point + length;
+    _.forEach(place, (p, index) => {
+      if (p < end_point) return true;
+
+      if (!index % 2) return false; //not end of chunk - return false
+
+      if (place[index - 1] <= start_point) result = true;
+
+      return false;
+    });
 
     return result;
   }
   place(item) {
     let fields = item.fields;
-    let points = item.value;
+    let point = item.value;
+    let length = item.length;
     let index = item.index;
     let oper = this.landscape[index];
-
-    oper.main.pull(...points)
+    oper.main.pull(point, point + length);
   }
 }
 

@@ -7,9 +7,9 @@ global.Promise = require('bluebird');
 var gulp = require("gulp");
 var mocha = require('gulp-mocha');
 
-gulp.src('build/**/*.test.js', {
-		read: false
-	})
-	.pipe(mocha({
-		timeout: 15000
-	}));
+gulp.src('test/**/*.test.js', {
+    read: false
+  })
+  .pipe(mocha({
+    timeout: 15000
+  }));

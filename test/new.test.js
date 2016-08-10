@@ -2,7 +2,7 @@
 
 var Storage = require("../src/Storage.js");
 
-describe("PERF", () => {
+describe.only("NEW", () => {
   var tested;
   let oper_count = 50;
   let service_count = 200;
@@ -25,7 +25,7 @@ describe("PERF", () => {
   });
 
   describe(`oper ${oper_count} service ${service_count} `, () => {
-    _.forEach([25, 50, 100, 200], count => {
+    _.forEach([2, 100, 200], count => {
       it("x" + count, () => {
         global.x = 0;
         global._intersection = 0;
@@ -38,11 +38,13 @@ describe("PERF", () => {
           }]
           let result = tested.place(query);
         }
+
         console.log('put per sec', global.x / (tested.last_time / 1e9 + tested.snap_time / 1e9));
         console.log('opc', global.x);
         console.log('int', global._intersection);
         console.log('query  :', tested.last_time / 1e9);
         console.log('snap  :', tested.snap_time / 1e9);
+        console.log(tested.snap.landscape.oper0.main);
       });
     });
 
