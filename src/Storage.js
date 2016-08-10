@@ -51,19 +51,16 @@ class Snapshot {
     let result = _.reduce(fields, (min, field) => {
       let place = places[field].content;
       let i;
-      let pos = false;
 
       for (i = 0; i < place.length / 2; i++) {
         let point = place[i * 2];
 
-        let tested = this.testPoint(places, fields, point, length);
-        if (tested) {
-          pos = point;
-          break;
-        }
+        if (point >= min) return min;
+
+        if (this.testPoint(places, fields, point, length)) return min <= point ? min : point;
       }
 
-      return min <= pos ? min : pos;
+      return min;
     }, 1000000);
 
     return result;
