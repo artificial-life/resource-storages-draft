@@ -34,24 +34,31 @@ class Snapshot {
         let x = oper[field];
         return acc ? acc.intersection(x) : x;
       }, false);
-      int = int.findSpace(length)
-      return min && min.value[0] <= int[0] ? min : {
-        value: int,
-        index: index
-      };
-    }, false);
+      int = int.findSpace(length);
+
+      if (min.value > int) {
+        min.value = int;
+        min.index = index;
+      }
+
+      return min;
+    }, {
+      value: 1000000,
+      index: -1
+    });
 
     result.fields = fields;
-
+    result.length = length;
     return result;
   }
   place(item) {
     let fields = item.fields;
-    let points = item.value;
+    let point = item.value;
+    let length = item.length;
     let index = item.index;
     let oper = this.landscape[index];
 
-    oper.main.pull(...points)
+    oper.main.pull(point, point + length);
   }
 }
 

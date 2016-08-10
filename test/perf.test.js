@@ -43,6 +43,7 @@ describe.only("PERF", () => {
         console.log('int', global._intersection);
         console.log('query  :', tested.last_time / 1e9);
         console.log('snap  :', tested.snap_time / 1e9);
+        console.log(tested.snap.landscape.oper0.main);
       });
     });
 
